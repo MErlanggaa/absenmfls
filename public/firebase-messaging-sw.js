@@ -32,48 +32,62 @@ const firebaseConfig = {
     appId: urlParams.get('appId'),
 };
 
-// Only initialize if we have config
+// Consolidated notification display logic
+function showNotification(payload) {
+    const { title, body } = payload.notification || {};
+    const data = payload.data || {};
+
+    const notificationOptions = {
+        body: body || data.body || 'Ada notifikasi baru',
+        icon: '/loog.jpeg',
+        badge: '/loog.jpeg',
+        data: {
+            url: data.url || payload.fcmOptions?.link || '/'
+        },
+        vibrate: [200, 100, 200],
+        requireInteraction: true,
+        actions: [
+            { action: 'open', title: 'LIHAT' },
+        ],
+    };
+
+    return self.registration.showNotification(title || data.title || 'MFLS NOTIFICATION', notificationOptions);
+}
+
+// Handle background messages via Firebase SDK
 if (firebaseConfig.apiKey) {
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
-    // Handle background messages
     messaging.onBackgroundMessage((payload) => {
-        console.log('[SW] Background message received:', payload);
-        const { title, body, icon } = payload.notification || {};
-        const data = payload.data || {};
-
-        // Use icon from payload or default to loog
-        const notificationIcon = icon || '/loog.jpeg';
-
-        const notificationOptions = {
-            body: body || 'Ada notifikasi baru',
-            icon: notificationIcon,
-            badge: '/loog.jpeg',
-            data: {
-                url: data.url || payload.fcmOptions?.link || '/'
-            },
-            vibrate: [200, 100, 200],
-            requireInteraction: true, // Notif nggak ilang sampai di-swipe/klik
-            actions: [
-                { action: 'open', title: 'LIHAT' },
-            ],
-        };
-
-        return self.registration.showNotification(title || 'MFLS NOTIFICATION', notificationOptions);
+        console.log('[SW] Background message received via FCM:', payload);
+        showNotification(payload);
     });
 }
+
+// Generic Push Listener (Fallack for DevTools "Push" button and other push types)
+self.addEventListener('push', (event) => {
+    console.log('[SW] Push event received:', event);
+    let payload = {};
+    if (event.data) {
+        try {
+            payload = event.data.json();
+        } catch (e) {
+            payload = { notification: { body: event.data.text() } };
+        }
+    }
+    event.waitUntil(showNotification(payload));
+});
 
 // Handle notification click
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-
     const url = event.notification.data?.url || '/';
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             for (const client of clientList) {
-                if (client.url === url && 'focus' in client) {
+                if (client.url.includes(url) && 'focus' in client) {
                     return client.focus();
                 }
             }

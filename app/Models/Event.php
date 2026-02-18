@@ -18,6 +18,7 @@ class Event extends Model
         'created_by',
         'reminder_enabled',
         'is_active',
+        'target_departments',
     ];
 
     protected $casts = [
@@ -25,6 +26,7 @@ class Event extends Model
         'end_date' => 'datetime',
         'reminder_enabled' => 'boolean',
         'is_active' => 'boolean',
+        'target_departments' => 'array',
     ];
 
     public function department()

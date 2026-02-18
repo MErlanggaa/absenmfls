@@ -37,6 +37,13 @@ class AttendanceController extends Controller
         $event    = $qr->event;
         $location = $event->location;
 
+        // Check Department Invitation
+        if (!empty($event->target_departments)) {
+            if (!in_array(auth()->user()->department_id, $event->target_departments)) {
+                return back()->with('error', 'Punten Bos, agenda rapat ini bukan untuk departemen lo!');
+            }
+        }
+
         if (!$location) {
             return back()->with('error', 'Lokasi event belum dikonfigurasi.');
         }

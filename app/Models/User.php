@@ -120,7 +120,7 @@ class User extends Authenticatable
 
     public function canManageEvents(): bool
     {
-        return $this->isSuperAdmin() || $this->isAdminIT() || $this->isAdministrasi();
+        return $this->isSuperAdmin() || $this->isAdminIT() || $this->isAdministrasi() || $this->role?->name === 'project_director';
     }
 
     public function canCreateApproval(): bool

@@ -17,44 +17,58 @@ class EventController extends Controller
 
     public function index()
     {
-        if (auth()->user()->canViewAllAttendance()) {
-            $events = Event::with(['creator', 'location'])->latest()->get();
-        } else {
-            $events = Event::with(['creator', 'location'])->where('is_active', true)->latest()->get();
+        $user = auth()->user();
+        $query = Event::with(['creator', 'location'])->latest();
+
+        if (!$user->canViewAllAttendance()) {
+            // Filter events aimed at ALL departments OR user's specific department
+            $query->where(function($q) use ($user) {
+                $q->whereNull('target_departments')
+                  ->orWhere('target_departments', 'like', '%"' . $user->department_id . '"%');
+            })->where('is_active', true);
         }
+
+        $events = $query->get();
         return view('events.index', compact('events'));
     }
 
     public function create()
     {
         if (!$this->isAdministrasi()) {
-            abort(403, 'Hanya Departemen Administrasi yang dapat membuat jadwal rapat.');
+            abort(403, 'Anda tidak memiliki akses untuk membuat agenda.');
         }
-        return view('events.create');
+        $departments = \App\Models\Department::all();
+        return view('events.create', compact('departments'));
     }
 
     public function store(Request $request)
     {
+        if (!$this->isAdministrasi()) {
+            abort(403, 'Anda tidak memiliki akses untuk membuat agenda.');
+        }
         $request->validate([
-            'name'           => 'required|string|max:200',
-            'description'    => 'required|string',
-            'event_date'     => 'required|date',
-            'duration_hours' => 'required|numeric|min:1',
-            'location_name'  => 'required|string|max:255',
-            'latitude'       => 'required|numeric',
-            'longitude'      => 'required|numeric',
-            'radius'         => 'required|numeric|min:10',
+            'name'               => 'required|string|max:200',
+            'description'        => 'required|string',
+            'event_date'         => 'required|date',
+            'duration_hours'     => 'required|numeric|min:1',
+            'location_name'      => 'required|string|max:255',
+            'latitude'           => 'required|numeric',
+            'longitude'          => 'required|numeric',
+            'radius'             => 'required|numeric|min:10',
+            'target_departments' => 'nullable|array',
+            'target_departments.*' => 'exists:departments,id',
         ]);
 
         $event = Event::create([
-            'name'             => $request->name,
-            'description'      => $request->description,
-            'event_date'       => $request->event_date,
-            'end_date'         => Carbon::parse($request->event_date)->addHours((float)$request->duration_hours),
-            'department_id'    => auth()->user()->department_id,
-            'created_by'       => auth()->id(),
-            'reminder_enabled' => true,
-            'is_active'        => true,
+            'name'               => $request->name,
+            'description'        => $request->description,
+            'event_date'         => $request->event_date,
+            'end_date'           => Carbon::parse($request->event_date)->addHours((float)$request->duration_hours),
+            'department_id'      => auth()->user()->department_id,
+            'target_departments' => $request->target_departments,
+            'created_by'         => auth()->id(),
+            'reminder_enabled'   => true,
+            'is_active'          => true,
         ]);
 
         EventLocation::create([
@@ -65,9 +79,14 @@ class EventController extends Controller
             'radius'    => $request->radius,
         ]);
 
-        // Notify all active users about the new agenda
-        $allUsers = \App\Models\User::where('is_active', true)->get();
-        foreach ($allUsers as $u) {
+        // Notify targeted users
+        $notifQuery = \App\Models\User::where('is_active', true);
+        if ($request->filled('target_departments')) {
+            $notifQuery->whereIn('department_id', $request->target_departments);
+        }
+        
+        $targetUsers = $notifQuery->get();
+        foreach ($targetUsers as $u) {
             $u->notify(new \App\Notifications\NewEventPublished($event));
         }
 
@@ -80,7 +99,11 @@ class EventController extends Controller
         
         $users = null;
         if (auth()->user()->canViewAllAttendance()) {
-            $users = \App\Models\User::where('is_active', true)->orderBy('name')->get();
+            $userQuery = \App\Models\User::where('is_active', true);
+            if (!empty($event->target_departments)) {
+                $userQuery->whereIn('department_id', $event->target_departments);
+            }
+            $users = $userQuery->orderBy('name')->get();
         }
 
         return view('events.show', compact('event', 'users'));

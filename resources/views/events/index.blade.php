@@ -40,6 +40,17 @@
                                 <span class="px-3 py-1 bg-slate-100 text-slate-400 text-[8px] font-black uppercase rounded-lg border border-slate-200 italic tracking-widest">Selesai</span>
                             @endif
                             <span class="text-[9px] font-black text-indigo-500 uppercase tracking-widest italic">{{ $event->event_date->format('H:i') }} WIB</span>
+                            @if(!empty($event->target_departments))
+                                <span class="bg-indigo-900 text-white text-[7px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter italic">
+                                    RAPAT KHUSUS: 
+                                    @php
+                                        $targetNames = \App\Models\Department::whereIn('id', $event->target_departments)->pluck('name')->toArray();
+                                        echo implode(', ', $targetNames);
+                                    @endphp
+                                </span>
+                            @else
+                                <span class="bg-slate-200 text-slate-500 text-[7px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter italic">All Dept</span>
+                            @endif
                         </div>
                         <h4 class="text-lg lg:text-xl font-black text-slate-900 italic tracking-tighter truncate uppercase">{{ $event->name }}</h4>
                         <p class="text-[10px] lg:text-xs text-slate-400 font-bold italic mt-1 line-clamp-1 leading-relaxed">{{ $event->description }}</p>

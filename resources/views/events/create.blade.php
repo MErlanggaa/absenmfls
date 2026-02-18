@@ -38,8 +38,34 @@
                             </div>
 
                             <div>
+                                <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4 pl-4 italic">Target Undangan Rapat</label>
+                                
+                                <div class="bg-slate-50 rounded-3xl p-6 border border-slate-100 space-y-4">
+                                    <div class="flex items-center gap-3 pb-3 border-b border-slate-200">
+                                        <input type="checkbox" id="select-all-depts" class="w-5 h-5 rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                        <label for="select-all-depts" class="text-xs font-black text-slate-700 uppercase italic cursor-pointer">PILIH SEMUA DEPARTEMEN</label>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                        @foreach($departments as $dept)
+                                            <div class="flex items-center gap-3 group">
+                                                <input type="checkbox" name="target_departments[]" value="{{ $dept->id }}" id="dept-{{ $dept->id }}" class="dept-checkbox w-5 h-5 rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500 transition-all group-hover:scale-110">
+                                                <label for="dept-{{ $dept->id }}" class="text-xs font-bold text-slate-600 uppercase cursor-pointer group-hover:text-indigo-600 transition-colors">
+                                                    {{ $dept->name }}
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <p class="mt-3 text-[9px] text-slate-400 italic px-4 flex items-center gap-2">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Jika tidak ada yang dicentang, rapat otomatis untuk SEMURAH (Seluruh Anggota).
+                                </p>
+                            </div>
+
+                            <div>
                                 <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 pl-4 italic">Deskripsi Singkat</label>
-                                <textarea name="description" rows="4" class="w-full input-premium" placeholder="Tujuan rapat, agenda, atau instruksi peserta..." required></textarea>
+                                <textarea name="description" rows="3" class="w-full input-premium" placeholder="Tujuan rapat, agenda, atau instruksi peserta..." required></textarea>
                             </div>
                         </div>
                     </div>
@@ -181,6 +207,18 @@
             });
 
             updateInputs(initialLat, initialLng);
+
+            // Select All Departments Logic
+            const selectAll = document.getElementById('select-all-depts');
+            const deptCheckboxes = document.querySelectorAll('.dept-checkbox');
+
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    deptCheckboxes.forEach(cb => {
+                        cb.checked = this.checked;
+                    });
+                });
+            }
         });
     </script>
 </x-app-layout>
