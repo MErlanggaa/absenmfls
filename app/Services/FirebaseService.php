@@ -45,18 +45,31 @@ class FirebaseService
         $payload = [
             'message' => [
                 'token' => $fcmToken,
-                // "notification" key REMOVED to force background handling by SW
+                'notification' => [
+                    'title' => $title,
+                    'body'  => $body,
+                ],
                 'data' => array_merge(
                     array_map('strval', $data), 
                     [
-                        'title' => $title,
-                        'body'  => $body,
-                        'url'   => $data['url'] ?? url('/'),
-                        'type'  => 'data_notification'
+                        'url' => $data['url'] ?? url('/'),
+                        'click_action' => $data['url'] ?? url('/')
                     ]
                 ),
                 'android' => [
                     'priority' => 'high',
+                    'notification' => [
+                        'click_action' => $data['url'] ?? url('/'),
+                        'sound' => 'default'
+                    ]
+                ],
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'sound' => 'default',
+                            'badge' => 1,
+                        ],
+                    ],
                 ],
                 'webpush' => [
                     'headers' => [
