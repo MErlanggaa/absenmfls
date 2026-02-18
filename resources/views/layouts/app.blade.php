@@ -154,6 +154,13 @@
                         @endif
                     </nav>
 
+                    <div id="pwa-install-container" class="px-6 py-4 border-t border-slate-100 hidden">
+                        <button id="pwa-install-btn" class="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-indigo-600 text-white font-black hover:bg-indigo-700 transition-all uppercase text-[10px] tracking-widest italic shadow-lg shadow-indigo-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            INSTALL MFLS APP
+                        </button>
+                    </div>
+
                     <div class="p-6 border-t border-slate-100">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -311,11 +318,43 @@
 
                 if ('serviceWorker' in navigator) {
                     window.addEventListener('load', () => {
-                        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                        const config = window.firebaseConfig || {};
+                        const query = new URLSearchParams(config).toString();
+                        navigator.serviceWorker.register('/firebase-messaging-sw.js?' + query)
                             .then(reg => console.log('PWA Service Worker Registered!'))
                             .catch(err => console.log('PWA Service Worker Failed!', err));
                     });
                 }
+
+                // PWA Install Logic
+                let deferredPrompt;
+                const installBtn = document.getElementById('pwa-install-btn');
+                const installContainer = document.getElementById('pwa-install-container');
+
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    // Prevent Chrome 67 and earlier from automatically showing the prompt
+                    e.preventDefault();
+                    // Stash the event so it can be triggered later.
+                    deferredPrompt = e;
+                    // Update UI signify the PWA can be installed
+                    installContainer.classList.remove('hidden');
+
+                    installBtn.addEventListener('click', (e) => {
+                        // hide our install UI
+                        installContainer.classList.add('hidden');
+                        // Show the prompt
+                        deferredPrompt.prompt();
+                        // Wait for the user to respond to the prompt
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('User accepted the MFLS install prompt');
+                            } else {
+                                console.log('User dismissed the MFLS install prompt');
+                            }
+                            deferredPrompt = null;
+                        });
+                    });
+                });
             });
 
             // Global Confirmation for Delete

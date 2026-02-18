@@ -27,8 +27,9 @@ class FirebasePushManager {
                 return;
             }
 
-            // Register service worker
-            const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            // Register service worker with config in query string
+            const configString = new URLSearchParams(this.app.options).toString();
+            const registration = await navigator.serviceWorker.register(`/firebase-messaging-sw.js?${configString}`);
 
             // Get FCM token
             const token = await getToken(this.messaging, {
@@ -109,6 +110,17 @@ class FirebasePushManager {
         }
 
         document.body.appendChild(toast);
+
+        // Also trigger system notification if possible
+        if (Notification.permission === 'granted' && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.showNotification(title || 'MFLS', {
+                    body: body || '',
+                    icon: '/loog.jpeg',
+                    data: data
+                });
+            });
+        }
 
         // Auto-remove after 6 seconds
         setTimeout(() => toast.remove(), 6000);

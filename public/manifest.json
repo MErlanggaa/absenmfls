@@ -1,8 +1,10 @@
 {
+    "id": "/",
     "name": "Mfls Management",
     "short_name": "MFLS",
     "description": "Sistem Manajemen Kehadiran & Pengajuan MFLS",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#0f172a",
     "theme_color": "#4f46e5",
@@ -11,13 +13,19 @@
             "src": "/loog.jpeg",
             "sizes": "192x192",
             "type": "image/jpeg",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "/loog.jpeg",
+            "sizes": "192x192",
+            "type": "image/jpeg",
+            "purpose": "maskable"
         },
         {
             "src": "/loog.jpeg",
             "sizes": "512x512",
             "type": "image/jpeg",
-            "purpose": "any maskable"
+            "purpose": "any"
         }
     ]
 }

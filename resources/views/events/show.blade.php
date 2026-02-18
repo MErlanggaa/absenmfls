@@ -323,32 +323,46 @@
                 // Clear loading
                 document.getElementById('reader').innerHTML = "";
 
-                // Use Html5QrcodeScanner for better failsafe UI
-                const html5QrcodeScanner = new Html5QrcodeScanner(
-                    "reader", 
-                    { 
-                        fps: 10, 
-                        qrbox: { width: 250, height: 250 },
-                        aspectRatio: 1.0
-                    },
-                    /* verbose= */ false
-                );
+                // Use Html5Qrcode for manual camera control
+                const html5QrCode = new Html5Qrcode("reader");
+                const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-                html5QrcodeScanner.render((decodedText) => {
-                    // Success!
-                    html5QrcodeScanner.clear().then(() => {
+                // Success callback
+                const onScanSuccess = (decodedText) => {
+                    html5QrCode.stop().then(() => {
                         document.getElementById('qr_input').value = decodedText;
                         document.getElementById('attendance-form').submit();
                     }).catch(error => {
-                        console.error("Failed to clear scanner", error);
+                        console.error("Failed to stop scanner", error);
                         document.getElementById('qr_input').value = decodedText;
                         document.getElementById('attendance-form').submit();
                     });
-                }, (error) => {
-                    // console.warn(`Code scan error = ${error}`);
+                };
+
+                // Try rear camera first (environment)
+                html5QrCode.start(
+                    { facingMode: "environment" }, 
+                    config, 
+                    onScanSuccess
+                ).catch(err => {
+                    console.error("Rear camera failed, trying fallback...", err);
+                    // Fallback to ANY available camera (usually front if rear fails)
+                    html5QrCode.start(
+                        { facingMode: "user" }, 
+                        config, 
+                        onScanSuccess
+                    ).catch(finalErr => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'KAMERA GAGAL',
+                            text: 'Cek izin kamera atau pastikan Bos pakai HTTPS/Localhost: ' + finalErr,
+                            confirmButtonText: 'SIAP'
+                        });
+                        closeScanner();
+                    });
                 });
 
-                window.scannerInstance = html5QrcodeScanner;
+                window.scannerInstance = html5QrCode;
 
             }, error => {
                 let msg = 'Izin lokasi (GPS) ditolak, Bos! Aktifin di setting browser ya.';
@@ -363,7 +377,7 @@
         function closeScanner() {
             document.getElementById('scanner-modal').classList.add('hidden');
             if (window.scannerInstance) {
-                window.scannerInstance.clear().catch(err => console.error("Scanner clear fail", err));
+                window.scannerInstance.stop().catch(err => console.error("Scanner stop fail", err));
             }
         }
     </script>
