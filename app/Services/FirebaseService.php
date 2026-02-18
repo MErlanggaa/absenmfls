@@ -66,12 +66,13 @@ class FirebaseService
                         'Urgency' => 'high',
                     ],
                     'notification' => [
-                        'icon' => '/loog.jpeg',
-                        'badge' => '/loog.jpeg',
+                        'icon' => url('/loog.jpeg'),
+                        'badge' => url('/loog.jpeg'),
                         'vibrate' => [200, 100, 200],
+                        'requireInteraction' => true,
                     ],
                     'fcm_options' => [
-                        'link' => $data['url'] ?? '/',
+                        'link' => $data['url'] ?? url('/'),
                     ],
                 ],
             ],

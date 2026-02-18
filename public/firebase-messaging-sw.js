@@ -40,15 +40,21 @@ if (firebaseConfig.apiKey) {
     // Handle background messages
     messaging.onBackgroundMessage((payload) => {
         console.log('[SW] Background message received:', payload);
-        const { title, body } = payload.notification || {};
+        const { title, body, icon } = payload.notification || {};
         const data = payload.data || {};
+
+        // Use icon from payload or default to loog
+        const notificationIcon = icon || '/loog.jpeg';
 
         const notificationOptions = {
             body: body || 'Ada notifikasi baru',
-            icon: '/loog.jpeg',
+            icon: notificationIcon,
             badge: '/loog.jpeg',
-            data: { url: data.url || '/' },
+            data: {
+                url: data.url || payload.fcmOptions?.link || '/'
+            },
             vibrate: [200, 100, 200],
+            requireInteraction: true, // Notif nggak ilang sampai di-swipe/klik
             actions: [
                 { action: 'open', title: 'LIHAT' },
             ],
