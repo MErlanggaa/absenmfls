@@ -1,0 +1,49 @@
+﻿
+  Dropping all tables  270.76ms DONE
+
+   INFO  Preparing database.  
+
+  Creating migration table  21.52ms DONE
+
+   INFO  Running migrations.  
+
+  0001_01_01_000000_create_users_table  100.89ms DONE
+  0001_01_01_000001_create_cache_table  26.11ms DONE
+  0001_01_01_000002_create_jobs_table  76.63ms DONE
+  2026_02_18_130219_create_departments_table  14.47ms DONE
+  2026_02_18_130220_create_roles_table  22.11ms DONE
+  2026_02_18_130222_add_details_to_users_table  189.75ms DONE
+  2026_02_18_130226_create_device_tokens_table  105.23ms DONE
+  2026_02_18_130228_create_approval_requests_table  122.10ms DONE
+  2026_02_18_130229_create_approval_levels_table  71.89ms DONE
+  2026_02_18_130230_create_approval_logs_table  132.17ms DONE
+  2026_02_18_130237_create_events_table  151.18ms DONE
+  2026_02_18_130238_create_event_participants_table  151.55ms DONE
+  2026_02_18_130239_create_event_locations_table  178.61ms DONE
+  2026_02_18_130240_create_event_qrcodes_table  128.74ms DONE
+  2026_02_18_130241_create_attendances_table  206.34ms DONE
+  2026_02_18_130242_create_notification_templates_table  13.25ms DONE
+  2026_02_18_130244_create_notifications_table  29.26ms DONE
+  2026_02_18_130245_create_notification_logs_table  33.69ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000]: General error: 1005 Can't create table `absenmfls`.`notification_logs` (errno: 150 "Foreign key constraint is incorrectly formed") (Connection: mysql, SQL: alter table `notification_logs` add constraint `notification_logs_notification_id_foreign` foreign key (`notification_id`) references `notifications` (`id`) on delete cascade)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:825
+    821Ôûò                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822Ôûò                 );
+    823Ôûò             }
+    824Ôûò 
+  Ô×£ 825Ôûò             throw new QueryException(
+    826Ôûò                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827Ôûò             );
+    828Ôûò         }
+    829Ôûò     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
+      PDOException::("SQLSTATE[HY000]: General error: 1005 Can't create table `absenmfls`.`notification_logs` (errno: 150 "Foreign key constraint is incorrectly formed")")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
+      PDOStatement::execute()
+
