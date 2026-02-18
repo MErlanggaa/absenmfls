@@ -82,6 +82,8 @@ class FirebaseService
             ],
         ];
 
+        Log::info('Firebase: Sending Payload', ['payload' => json_encode($payload)]);
+
         $url = "https://fcm.googleapis.com/v1/projects/{$this->projectId}/messages:send";
 
         $response = Http::withToken($accessToken)

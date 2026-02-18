@@ -38,8 +38,8 @@ class NewEventPublished extends Notification
     public function toFcm(object $notifiable): array
     {
         return [
-            'title' => '📢 Agenda Baru Diterbitkan',
-            'body'  => $this->event->name . ' — ' . $this->event->event_date->format('d M H:i') . ' WIB',
+            'title' => 'Agenda Baru',
+            'body'  => 'Ada agenda baru. Silahkan cek aplikasi.',
             'data'  => [
                 'type' => 'event_new',
                 'id'   => (string) $this->event->id,
