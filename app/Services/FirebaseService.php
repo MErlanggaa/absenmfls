@@ -52,10 +52,6 @@ class FirebaseService
                 'data' => array_map('strval', $data), // FCM data must be string values
                 'android' => [
                     'priority' => 'high',
-                    'notification' => [
-                        'sound' => 'default',
-                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                    ],
                 ],
                 'apns' => [
                     'payload' => [
@@ -66,8 +62,13 @@ class FirebaseService
                     ],
                 ],
                 'webpush' => [
+                    'headers' => [
+                        'Urgency' => 'high',
+                    ],
                     'notification' => [
-                        'icon' => '/favicon.ico',
+                        'icon' => '/loog.jpeg',
+                        'badge' => '/loog.jpeg',
+                        'vibrate' => [200, 100, 200],
                     ],
                 ],
             ],

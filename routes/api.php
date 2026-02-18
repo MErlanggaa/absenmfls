@@ -9,6 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/fcm-token', [FcmTokenController::class, 'store']);
-    Route::delete('/fcm-token', [FcmTokenController::class, 'destroy']);
+    //
 });

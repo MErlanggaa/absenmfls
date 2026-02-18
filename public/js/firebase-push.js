@@ -60,7 +60,7 @@ class FirebasePushManager {
         try {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
-            const response = await fetch('/api/fcm-token', {
+            const response = await fetch('/fcm-token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,10 +74,14 @@ class FirebasePushManager {
             });
 
             if (response.ok) {
-                console.log('FCM token saved to server.');
+                console.log('✅ FCM token saved to server successfully.');
+            } else {
+                console.error('❌ Failed to save FCM token to server. Status:', response.status);
+                const errBody = await response.text();
+                console.error('Response details:', errBody);
             }
         } catch (error) {
-            console.error('Failed to save FCM token:', error);
+            console.error('❌ Error sending FCM token to server:', error);
         }
     }
 

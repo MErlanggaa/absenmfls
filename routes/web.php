@@ -45,6 +45,10 @@ Route::middleware('auth')->group(function () {
 
     // Attendance Manual
     Route::post('/attendances/manual', [\App\Http\Controllers\AttendanceController::class, 'manualStore'])->name('attendances.manual-store');
+
+    // FCM Tokens
+    Route::post('/fcm-token', [App\Http\Controllers\Api\FcmTokenController::class, 'store'])->name('fcm.store');
+    Route::delete('/fcm-token', [App\Http\Controllers\Api\FcmTokenController::class, 'destroy'])->name('fcm.destroy');
 });
 
 require __DIR__.'/auth.php';
