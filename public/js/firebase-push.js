@@ -37,7 +37,12 @@ class FirebasePushManager {
 
             // Register service worker with config in query string
             const configString = new URLSearchParams(this.app.options).toString();
-            const registration = await navigator.serviceWorker.register(`/firebase-messaging-sw.js?${configString}`);
+            const registration = await navigator.serviceWorker.register(`/firebase-messaging-sw.js?${configString}`, {
+                updateViaCache: 'none' // Force check for new SW on setiap load
+            });
+
+            // Force update check
+            registration.update();
 
             // Get FCM token
             const token = await getToken(this.messaging, {

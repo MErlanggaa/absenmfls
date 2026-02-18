@@ -316,15 +316,7 @@
                     });
                 @endif
 
-                if ('serviceWorker' in navigator) {
-                    window.addEventListener('load', () => {
-                        const config = window.firebaseConfig || {};
-                        const query = new URLSearchParams(config).toString();
-                        navigator.serviceWorker.register('/firebase-messaging-sw.js?' + query)
-                            .then(reg => console.log('PWA Service Worker Registered!'))
-                            .catch(err => console.log('PWA Service Worker Failed!', err));
-                    });
-                }
+                // Service Worker Registration is handled by firebase-push.js module
 
                 // PWA Install Logic
                 let deferredPrompt;
