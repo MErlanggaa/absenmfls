@@ -70,6 +70,9 @@ class FirebaseService
                         'badge' => '/loog.jpeg',
                         'vibrate' => [200, 100, 200],
                     ],
+                    'fcm_options' => [
+                        'link' => $data['url'] ?? '/',
+                    ],
                 ],
             ],
         ];
@@ -155,8 +158,13 @@ class FirebaseService
             $serviceAccount = json_decode(file_get_contents($this->serviceAccountPath), true);
 
             $now = time();
-            $header = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
-            $payload = base64_encode(json_encode([
+            
+            $base64UrlEncode = function($data) {
+                return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($data));
+            };
+
+            $header = $base64UrlEncode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
+            $payload = $base64UrlEncode(json_encode([
                 'iss'   => $serviceAccount['client_email'],
                 'sub'   => $serviceAccount['client_email'],
                 'aud'   => 'https://oauth2.googleapis.com/token',
@@ -169,7 +177,7 @@ class FirebaseService
             $privateKey = $serviceAccount['private_key'];
 
             openssl_sign($signingInput, $signature, $privateKey, OPENSSL_ALGO_SHA256);
-            $jwt = $signingInput . '.' . base64_encode($signature);
+            $jwt = $signingInput . '.' . $base64UrlEncode($signature);
 
             $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
                 'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
