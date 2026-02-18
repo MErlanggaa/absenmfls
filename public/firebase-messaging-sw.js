@@ -45,6 +45,8 @@ function showNotification(payload) {
             url: data.url || payload.fcmOptions?.link || '/'
         },
         vibrate: [200, 100, 200],
+        tag: 'mfls-notif',
+        renotify: true,
         requireInteraction: true,
         actions: [
             { action: 'open', title: 'LIHAT' },

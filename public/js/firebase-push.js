@@ -141,12 +141,16 @@ class FirebasePushManager {
         document.body.appendChild(toast);
 
         // Also trigger system notification if possible
-        if (Notification.permission === 'granted' && navigator.serviceWorker.controller) {
+        if (Notification.permission === 'granted') {
             navigator.serviceWorker.ready.then(registration => {
                 registration.showNotification(title || 'MFLS', {
                     body: body || '',
                     icon: '/loog.jpeg',
-                    data: data
+                    badge: '/loog.jpeg',
+                    vibrate: [200, 100, 200],
+                    data: data,
+                    tag: 'mfls-notif-' + Date.now(), // Force individual notifications
+                    requireInteraction: true
                 });
             });
         }
