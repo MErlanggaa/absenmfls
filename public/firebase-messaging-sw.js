@@ -39,8 +39,8 @@ function showNotification(payload) {
 
     const notificationOptions = {
         body: body || data.body || 'Ada notifikasi baru',
-        icon: '/loog.jpeg',
-        badge: '/loog.jpeg',
+        icon: '/loog.jpeg', // Warning: Image size too large for Android (1563px). Should be 192px.
+        // badge: '/loog.jpeg', // Commented out to let Android use default bell icon regarding size issue
         data: {
             url: data.url || payload.fcmOptions?.link || '/'
         },

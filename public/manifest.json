@@ -17,7 +17,7 @@
         },
         {
             "src": "/loog.jpeg",
-            "sizes": "192x192",
+            "sizes": "any",
             "type": "image/jpeg",
             "purpose": "maskable"
         },
