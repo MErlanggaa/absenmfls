@@ -23,7 +23,15 @@ class FirebasePushManager {
         try {
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
-                console.log('Push notification permission denied.');
+                console.log('❌ Push notification permission denied.');
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'NOTIFIKASI MATI',
+                        text: 'Bos belum ijinin notifikasi di gembok browser, pantesan nggak muncul!',
+                        confirmButtonText: 'OKE, GUE SETTING'
+                    });
+                }
                 return;
             }
 
@@ -38,8 +46,20 @@ class FirebasePushManager {
             });
 
             if (token) {
-                console.log('FCM Token obtained:', token.substring(0, 20) + '...');
+                console.log('✅ FCM Token obtained:', token.substring(0, 20) + '...');
                 await this.saveTokenToServer(token);
+                // Notification for user
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'NOTIFIKASI AKTIF',
+                        text: 'HP lo sudah terdaftar buat nerima push notification, Bos!',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
             }
 
             // Handle foreground messages (when app is open)
