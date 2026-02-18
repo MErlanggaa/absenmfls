@@ -89,19 +89,37 @@
             </div>
         </div>
 
-        <script type="module">
-            import { getToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
+        <script>
+            // We don't import here because firebase-push.js is already loaded in app layout
             
+            // Helper to wait for manager
+            function waitForManager() {
+                return new Promise((resolve, reject) => {
+                    if (window.firebasePushManager) return resolve(window.firebasePushManager);
+                    
+                    let retries = 0;
+                    const interval = setInterval(() => {
+                        retries++;
+                        if (window.firebasePushManager) {
+                            clearInterval(interval);
+                            resolve(window.firebasePushManager);
+                        }
+                        if (retries > 10) { // 5 seconds timeout
+                            clearInterval(interval);
+                            reject("Timeout: Firebase Manager lambat loading.");
+                        }
+                    }, 500);
+                });
+            }
+
             window.checkFcm = async function() {
                 const display = document.getElementById('fcm-token-display');
-                display.value = "Memeriksa...";
+                display.value = "Menunggu sistem siap...";
                 
-                if (!window.firebasePushManager) {
-                    display.value = "Error: Firebase Manager belum siap. Coba refresh halaman.";
-                    return;
-                }
-
                 try {
+                    const manager = await waitForManager();
+                    display.value = "Memeriksa Token...";
+
                     // Re-request permission just in case
                     const permission = await Notification.requestPermission();
                     if (permission !== 'granted') {
@@ -109,20 +127,26 @@
                         return;
                     }
 
-                    // Get token
-                    const token = await getToken(window.firebasePushManager.messaging, {
-                        vapidKey: window.firebasePushManager.vapidKey,
+                    // Manually get token using SDK referenced in global scope or wait for manager's messaging
+                    // Since manager uses modules internally, we access its public 'messaging' property 
+                    // But we need 'getToken' function. 
+                    // Easiest way: Use the manager's messaging instance directly
+                    
+                    // Dynamic import to get getToken function
+                    const { getToken } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
+                    
+                    const token = await getToken(manager.messaging, {
+                        vapidKey: manager.vapidKey,
                         serviceWorkerRegistration: await navigator.serviceWorker.ready
                     });
 
                     if (token) {
                         display.value = token;
-                        // Optional: Send to server to ensure sync
                     } else {
                         display.value = "Gagal mendapatkan token. Coba clear cache browser.";
                     }
                 } catch (err) {
-                    display.value = "Error: " + err.message;
+                    display.value = "Error: " + err;
                     console.error(err);
                 }
             };
