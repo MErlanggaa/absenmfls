@@ -48,6 +48,22 @@ Route::middleware('auth')->group(function () {
 
     // FCM Tokens
     Route::post('/fcm-token', [App\Http\Controllers\Api\FcmTokenController::class, 'store'])->name('fcm.store');
+    
+    // Debug FCM Route (Temporary)
+    Route::get('/test-fcm', function (Illuminate\Http\Request $request) {
+        $token = $request->query('token');
+        if (!$token) return 'Please provide ?token=YOUR_FCM_TOKEN';
+        
+        $firebase = new App\Services\FirebaseService();
+        $res = $firebase->sendToDevice(
+            $token, 
+            'TEST DARI LARAVEL', 
+            'Halo Bos! Kalau ini masuk berarti Laravel aman sentosa.',
+            ['url' => '/']
+        );
+        
+        return $res ? 'BERHASIL DIKIRIM! Cek HP.' : 'GAGAL MENGIRIM! Cek Log Laravel (storage/logs/laravel.log)';
+    });
     Route::delete('/fcm-token', [App\Http\Controllers\Api\FcmTokenController::class, 'destroy'])->name('fcm.destroy');
 });
 
