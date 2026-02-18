@@ -45,31 +45,22 @@ class FirebaseService
         $payload = [
             'message' => [
                 'token' => $fcmToken,
-                'notification' => [
-                    'title' => $title,
-                    'body'  => $body,
-                ],
-                'data' => array_map('strval', $data), // FCM data must be string values
+                // "notification" key REMOVED to force background handling by SW
+                'data' => array_merge(
+                    array_map('strval', $data), 
+                    [
+                        'title' => $title,
+                        'body'  => $body,
+                        'url'   => $data['url'] ?? url('/'),
+                        'type'  => 'data_notification'
+                    ]
+                ),
                 'android' => [
                     'priority' => 'high',
-                ],
-                'apns' => [
-                    'payload' => [
-                        'aps' => [
-                            'sound' => 'default',
-                            'badge' => 1,
-                        ],
-                    ],
                 ],
                 'webpush' => [
                     'headers' => [
                         'Urgency' => 'high',
-                    ],
-                    'notification' => [
-                        'icon' => url('/loog.jpeg'),
-                        'badge' => url('/loog.jpeg'),
-                        'vibrate' => [200, 100, 200],
-                        'requireInteraction' => true,
                     ],
                     'fcm_options' => [
                         'link' => $data['url'] ?? url('/'),
