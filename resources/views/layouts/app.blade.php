@@ -300,7 +300,13 @@
                         confirmButtonText: 'OKE, SORI'
                     });
                 @endif
-                
+                @if(session('message'))
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'INFO',
+                        text: "{{ session('message') }}",
+                        confirmButtonText: 'MENGERTI'
+                    });
                 @endif
 
                 if ('serviceWorker' in navigator) {
