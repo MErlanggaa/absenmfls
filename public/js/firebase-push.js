@@ -164,6 +164,7 @@ class FirebasePushManager {
 document.addEventListener('DOMContentLoaded', () => {
     if (window.firebaseConfig && window.firebaseVapidKey) {
         const manager = new FirebasePushManager(window.firebaseConfig, window.firebaseVapidKey);
+        window.firebasePushManager = manager; // Expose for debugging
         manager.init();
     }
 });

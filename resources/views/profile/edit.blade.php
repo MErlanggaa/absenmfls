@@ -60,5 +60,77 @@
                 </div>
             </form>
         </div>
-    </div>
-</x-app-layout>
+
+        <!-- Debug Notification Section -->
+        <div class="premium-card mt-6 border-2 border-indigo-100 bg-indigo-50/50">
+            <h4 class="text-sm font-black text-indigo-900 uppercase italic tracking-tighter mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Debug Notifikasi (Android)
+            </h4>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-black text-indigo-400 uppercase tracking-widest italic ml-4">Status & Token FCM</label>
+                    <textarea id="fcm-token-display" readonly rows="4" class="w-full input-premium bg-white font-mono text-[10px] text-slate-500" placeholder="Token akan muncul di sini..."></textarea>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="checkFcm()" type="button" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
+                        Cek Token Saya
+                    </button>
+                    <button onclick="copyToken()" type="button" class="px-4 py-3 bg-white text-indigo-600 border border-indigo-100 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-50 transition">
+                        Copy
+                    </button>
+                </div>
+                
+                <p class="text-[9px] text-indigo-400 italic font-bold">
+                    *Tekan "Cek Token", jika muncul teks panjang, kirim ke Admin buat dicek.
+                </p>
+            </div>
+        </div>
+
+        <script type="module">
+            import { getToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
+            
+            window.checkFcm = async function() {
+                const display = document.getElementById('fcm-token-display');
+                display.value = "Memeriksa...";
+                
+                if (!window.firebasePushManager) {
+                    display.value = "Error: Firebase Manager belum siap. Coba refresh halaman.";
+                    return;
+                }
+
+                try {
+                    // Re-request permission just in case
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') {
+                        display.value = "Ijin Notifikasi DITOLAK (Denied). Buka setting browser HP -> Site Settings -> Notifications -> Allow.";
+                        return;
+                    }
+
+                    // Get token
+                    const token = await getToken(window.firebasePushManager.messaging, {
+                        vapidKey: window.firebasePushManager.vapidKey,
+                        serviceWorkerRegistration: await navigator.serviceWorker.ready
+                    });
+
+                    if (token) {
+                        display.value = token;
+                        // Optional: Send to server to ensure sync
+                    } else {
+                        display.value = "Gagal mendapatkan token. Coba clear cache browser.";
+                    }
+                } catch (err) {
+                    display.value = "Error: " + err.message;
+                    console.error(err);
+                }
+            };
+
+            window.copyToken = function() {
+                const copyText = document.getElementById("fcm-token-display");
+                copyText.select();
+                document.execCommand("copy");
+                alert("Token dicopy!");
+            }
+        </script>
