@@ -34,8 +34,7 @@ const firebaseConfig = {
 
 // Consolidated notification display logic
 function showNotification(payload) {
-    // Prioritize data payload (since backend now sends data-only messages)
-    // Normal priority: Notification Payload first, then Data
+    const data = payload.data || {};
     const title = payload.notification?.title || data.title || 'MFLS NOTIFICATION';
     const body = payload.notification?.body || data.body || 'Ada notifikasi baru';
 
