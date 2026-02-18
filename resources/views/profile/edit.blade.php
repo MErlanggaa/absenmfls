@@ -134,3 +134,5 @@
                 alert("Token dicopy!");
             }
         </script>
+    </div>
+</x-app-layout>
