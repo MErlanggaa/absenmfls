@@ -89,64 +89,40 @@
             </div>
         </div>
 
-        <script>
-            // We don't import here because firebase-push.js is already loaded in app layout
+        <script type="module">
+            import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+            import { getMessaging, getToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
             
-            // Helper to wait for manager
-            function waitForManager() {
-                return new Promise((resolve, reject) => {
-                    if (window.firebasePushManager) return resolve(window.firebasePushManager);
-                    
-                    let retries = 0;
-                    const interval = setInterval(() => {
-                        retries++;
-                        if (window.firebasePushManager) {
-                            clearInterval(interval);
-                            resolve(window.firebasePushManager);
-                        }
-                        if (retries > 10) { // 5 seconds timeout
-                            clearInterval(interval);
-                            reject("Timeout: Firebase Manager lambat loading.");
-                        }
-                    }, 500);
-                });
-            }
-
             window.checkFcm = async function() {
                 const display = document.getElementById('fcm-token-display');
-                display.value = "Menunggu sistem siap...";
+                display.value = "Menghubungkan ke Google...";
                 
                 try {
-                    const manager = await waitForManager();
-                    display.value = "Memeriksa Token...";
-
-                    // Re-request permission just in case
+                    // Re-request permission manually
                     const permission = await Notification.requestPermission();
                     if (permission !== 'granted') {
-                        display.value = "Ijin Notifikasi DITOLAK (Denied). Buka setting browser HP -> Site Settings -> Notifications -> Allow.";
+                        display.value = "Ijin Notifikasi DITOLAK (Denied). Mohon Reset Permission di setting browser.";
                         return;
                     }
 
-                    // Manually get token using SDK referenced in global scope or wait for manager's messaging
-                    // Since manager uses modules internally, we access its public 'messaging' property 
-                    // But we need 'getToken' function. 
-                    // Easiest way: Use the manager's messaging instance directly
-                    
-                    // Dynamic import to get getToken function
-                    const { getToken } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
-                    
-                    const token = await getToken(manager.messaging, {
-                        vapidKey: manager.vapidKey,
+                    // Standalone Init using global config
+                    const app = initializeApp(window.firebaseConfig);
+                    const messaging = getMessaging(app);
+
+                    display.value = "Mengambil Token...";
+
+                    const token = await getToken(messaging, {
+                        vapidKey: window.firebaseVapidKey,
                         serviceWorkerRegistration: await navigator.serviceWorker.ready
                     });
 
                     if (token) {
                         display.value = token;
                     } else {
-                        display.value = "Gagal mendapatkan token. Coba clear cache browser.";
+                        display.value = "Gagal. Pastikan sinyal bagus dan coba lagi.";
                     }
                 } catch (err) {
-                    display.value = "Error: " + err;
+                    display.value = "Error Detail: " + err.message;
                     console.error(err);
                 }
             };
