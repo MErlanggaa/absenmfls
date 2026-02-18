@@ -7,6 +7,14 @@
 
         <title>{{ config('app.name', 'Presensi MFLS') }}</title>
 
+        <!-- PWA Meta Tags -->
+        <link rel="manifest" href="/manifest.json">
+        <meta name="theme-color" content="#4f46e5">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="MFLS">
+        <link rel="apple-touch-icon" href="/loog.jpeg">
+
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -292,14 +300,15 @@
                     });
                 @endif
                 
-                @if(session('message'))
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'INFO',
-                        text: "{{ session('message') }}",
-                        confirmButtonText: 'MENGERTI'
-                    });
                 @endif
+
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', () => {
+                        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                            .then(reg => console.log('PWA Service Worker Registered!'))
+                            .catch(err => console.log('PWA Service Worker Failed!', err));
+                    });
+                }
             });
 
             // Global Confirmation for Delete

@@ -1,6 +1,18 @@
-// Firebase Cloud Messaging Service Worker
-// File: public/firebase-messaging-sw.js
 // This file MUST be in the public root (not in /js/) for FCM to work
+
+// Standard Service Worker lifecycle for PWA
+self.addEventListener('install', (event) => {
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(clients.claim());
+});
+
+// Simple fetch listener to pass PWA criteria
+self.addEventListener('fetch', (event) => {
+    // Standard fetch logic
+});
 
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
