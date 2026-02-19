@@ -30,7 +30,10 @@ class FirebaseService
     /**
      * Send a push notification to a single device token.
      */
-    public function sendToDevice(string $fcmToken, string $title, string $body, array $data = []): bool
+    /**
+     * @return bool|string Returns true on success, 'unregistered' if token is expired, false on other errors.
+     */
+    public function sendToDevice(string $fcmToken, string $title, string $body, array $data = []): bool|string
     {
         if (empty($this->projectId)) {
             Log::warning('Firebase: FIREBASE_PROJECT_ID not set in .env');
@@ -94,6 +97,14 @@ class FirebaseService
             return true;
         }
 
+        // Token expired / unregistered — perlu dihapus dari database
+        $responseBody = $response->json();
+        $errorCode = $responseBody['error']['details'][0]['errorCode'] ?? '';
+        if ($errorCode === 'UNREGISTERED' || $response->status() === 404) {
+            Log::warning('Firebase: Token UNREGISTERED (expired), will be deleted', ['token' => substr($fcmToken, 0, 20) . '...']);
+            return 'unregistered';
+        }
+
         Log::error('Firebase: Failed to send notification', [
             'status' => $response->status(),
             'body'   => $response->body(),
@@ -106,11 +117,15 @@ class FirebaseService
      */
     public function sendToMultiple(array $fcmTokens, string $title, string $body, array $data = []): array
     {
-        $results = ['success' => 0, 'failure' => 0];
+        $results = ['success' => 0, 'failure' => 0, 'unregistered' => []];
 
         foreach ($fcmTokens as $token) {
-            if ($this->sendToDevice($token, $title, $body, $data)) {
+            $result = $this->sendToDevice($token, $title, $body, $data);
+            if ($result === true) {
                 $results['success']++;
+            } elseif ($result === 'unregistered') {
+                $results['failure']++;
+                $results['unregistered'][] = $token; // tandai untuk dihapus
             } else {
                 $results['failure']++;
             }

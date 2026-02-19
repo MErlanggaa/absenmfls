@@ -64,7 +64,13 @@ class FcmChannel
 
             $results = $this->firebase->sendToMultiple($tokens, $title, $body, $data);
             
-            Log::info('FcmChannel: Send results', $results);
+            Log::info('FcmChannel: Send results', ['success' => $results['success'], 'failure' => $results['failure'], 'unregistered_count' => count($results['unregistered'])]);
+
+            // Hapus token yang sudah expired/unregistered dari database
+            if (!empty($results['unregistered'])) {
+                DeviceToken::whereIn('token', $results['unregistered'])->delete();
+                Log::warning('FcmChannel: Deleted ' . count($results['unregistered']) . ' expired token(s) for user ' . $notifiable->id);
+            }
             
         } catch (\Exception $e) {
             Log::error('FcmChannel Error: ' . $e->getMessage());
