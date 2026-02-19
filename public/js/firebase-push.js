@@ -135,8 +135,14 @@ class FirebasePushManager {
 
         // Play custom notification sound
         try {
-            const audio = new Audio('/hidup-jokowi.mp3');
-            audio.play().catch(e => console.log('Audio autoplay blocked or failed:', e));
+            const audio = new Audio('/hidup-jokowi.mp3?v=' + Date.now());
+            audio.volume = 1.0;
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                    console.log('Audio playback blocked. This is normal if you havent interacted with the page yet.', e);
+                });
+            }
         } catch (e) {
             console.error('Error playing sound:', e);
         }
@@ -169,10 +175,9 @@ class FirebasePushManager {
             navigator.serviceWorker.ready.then(registration => {
                 registration.showNotification(title || 'MFLS', {
                     body: body || '',
-                    // PENTING: Tidak pakai icon - loog.jpeg terlalu besar (1563px), 
-                    // bikin Android diam-diam gagal tampilkan notifikasi
                     data: data,
-                    vibrate: [200, 100, 200],
+                    vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500],
+                    sound: '/hidup-jokowi.mp3',
                     tag: 'mfls-notif-fg',
                     renotify: true,
                 });

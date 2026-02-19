@@ -50,8 +50,11 @@ function showNotification(payload) {
 
     var notificationOptions = {
         body: body,
+        icon: '/loog.jpeg',
+        badge: '/loog.jpeg',
         data: { url: link },
-        vibrate: [200, 100, 200],
+        vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500], // Custom vibration
+        sound: '/hidup-jokowi.mp3', // Supported on some desktop browsers
         tag: 'mfls-notif',
         renotify: true,
     };
