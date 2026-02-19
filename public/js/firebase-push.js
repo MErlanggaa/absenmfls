@@ -35,10 +35,9 @@ class FirebasePushManager {
                 return;
             }
 
-            // Register service worker with config in query string
-            const configString = new URLSearchParams(this.app.options).toString();
-            const registration = await navigator.serviceWorker.register(`/firebase-messaging-sw.js?${configString}`, {
-                updateViaCache: 'none' // Force check for new SW on setiap load
+            // Register service worker - config sudah di-inject server-side, tidak perlu query string
+            const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+                updateViaCache: 'none' // Force check for new SW on every load
             });
 
             // Force update check
