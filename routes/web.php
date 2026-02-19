@@ -57,8 +57,8 @@ Route::middleware('auth')->group(function () {
         $firebase = new App\Services\FirebaseService();
         $res = $firebase->sendToDevice(
             $token, 
-            'TEST DARI LARAVEL', 
-            'Halo Bos! Kalau ini masuk berarti Laravel aman sentosa.',
+            'Absen Woi!', 
+            'Ada Rapat Hari ini jangan lupa!.',
             ['url' => '/']
         );
         
