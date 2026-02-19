@@ -74,9 +74,12 @@
                     <textarea id="fcm-token-display" readonly rows="4" class="w-full input-premium bg-white font-mono text-[10px] text-slate-500" placeholder="Token akan muncul di sini..."></textarea>
                 </div>
 
-                <div class="flex gap-2">
+                <div class="flex flex-wrap gap-2">
                     <button onclick="checkFcm()" type="button" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
                         Cek Token Saya
+                    </button>
+                    <button onclick="testSound()" type="button" class="px-4 py-3 bg-amber-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-amber-600 transition shadow-lg shadow-amber-100">
+                        🔊 Test Suara
                     </button>
                     <button onclick="copyToken()" type="button" class="px-4 py-3 bg-white text-indigo-600 border border-indigo-100 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-50 transition">
                         Copy
@@ -136,6 +139,30 @@
                     display.value = "Error Detail: " + err.message;
                     console.error(err);
                 }
+            };
+
+            window.testSound = function() {
+                const audio = new Audio('/hidup-jokowi.mp3');
+                audio.play()
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'SUARA JALAN!',
+                            text: 'Pastiin volume HP gak silent ya, Bos!',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Test sound failed:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'GAGAL BUNYI',
+                            text: 'Browser lo nahan suaranya. Klik layar sekali terus coba lagi.',
+                        });
+                    });
             };
 
             window.copyToken = function() {
