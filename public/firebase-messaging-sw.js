@@ -35,42 +35,42 @@ const firebaseConfig = {
 // Consolidated notification display logic
 function showNotification(payload) {
     const data = payload.data || {};
-    const title = payload.notification?.title || data.title || 'MFLS NOTIFICATION';
-    const body = payload.notification?.body || data.body || 'Ada notifikasi baru';
+    const title = (payload.notification && payload.notification.title) || data.title || 'MFLS Notifikasi';
+    const body = (payload.notification && payload.notification.body) || data.body || 'Ada notifikasi baru';
+    const url = (payload.fcmOptions && payload.fcmOptions.link) || data.url || '/';
 
+    console.log('[SW] showNotification. Title:', title, 'Body:', body, 'URL:', url);
+
+    // PENTING: Icon yang terlalu besar atau format salah bisa diam-diam gagalkan notifikasi di Android!
+    // Icon dihapus agar Android gunakan ikon default sistem.
     const notificationOptions = {
-        body: body || data.body || 'Ada notifikasi baru',
-        icon: '/loog.jpeg', // Warning: Image size too large for Android (1563px). Should be 192px.
-        // badge: '/loog.jpeg', // Commented out to let Android use default bell icon regarding size issue
-        data: {
-            url: data.url || payload.fcmOptions?.link || '/'
-        },
+        body: body,
+        // icon: '/icons/icon-192.png', // Aktifkan jika ada icon 192x192 PNG
+        data: { url: url },
         vibrate: [200, 100, 200],
         tag: 'mfls-notif',
         renotify: true,
-        requireInteraction: true,
-        actions: [
-            { action: 'open', title: 'LIHAT' },
-        ],
     };
 
-    return self.registration.showNotification(title || data.title || 'MFLS NOTIFICATION', notificationOptions);
+    return self.registration.showNotification(title, notificationOptions);
 }
 
 // Handle background messages via Firebase SDK
+// PENTING: Firebase SDK pada Web WAJIB memanggil showNotification secara manual.
+// SDK tidak menampilkan notifikasi secara otomatis seperti native Android app.
 if (firebaseConfig.apiKey) {
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
     messaging.onBackgroundMessage((payload) => {
-        console.log('[SW] Background message received via FCM:', payload);
-        showNotification(payload);
+        console.log('[SW] onBackgroundMessage received:', JSON.stringify(payload));
+        return showNotification(payload);
     });
 }
 
-// Generic Push Listener (Fallack for DevTools "Push" button and other push types)
+// Generic Push Listener (Fallback for raw push events)
 self.addEventListener('push', (event) => {
-    console.log('[SW] Push event received:', event);
+    console.log('[SW] Raw push event received');
     let payload = {};
     if (event.data) {
         try {
@@ -85,7 +85,7 @@ self.addEventListener('push', (event) => {
 // Handle notification click
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    const url = event.notification.data?.url || '/';
+    const url = (event.notification.data && event.notification.data.url) || '/';
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
