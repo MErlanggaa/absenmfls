@@ -21,6 +21,23 @@ class FirebasePushManager {
      */
     async init() {
         try {
+            // Check if Notification API exists (iOS Safari check)
+            if (typeof Notification === 'undefined') {
+                console.log('❌ Notification API not found.');
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'KHUSUS IPHONE',
+                            html: 'Bos, notifikasi di iPhone cuma jalan kalau:<br><br>1. Bos pake <b>iOS 16.4+</b><br>2. Klik tombol <b>Share</b><br>3. Pilih <b>Add to Home Screen</b><br>4. Buka PWA dari Home Screen',
+                            confirmButtonText: 'OKE, MENGERTI'
+                        });
+                    }
+                }
+                return;
+            }
+
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
                 console.log('❌ Push notification permission denied.');
@@ -115,6 +132,14 @@ class FirebasePushManager {
     showForegroundNotification(payload) {
         const { title, body } = payload.notification || {};
         const data = payload.data || {};
+
+        // Play custom notification sound
+        try {
+            const audio = new Audio('/hidup-jokowi.mp3');
+            audio.play().catch(e => console.log('Audio autoplay blocked or failed:', e));
+        } catch (e) {
+            console.error('Error playing sound:', e);
+        }
 
         // Create toast element
         const toast = document.createElement('div');

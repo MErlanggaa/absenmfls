@@ -98,6 +98,17 @@
                 display.value = "Menghubungkan ke Google...";
                 
                 try {
+                    // Fix for iOS Safari (check if Notification variable exists)
+                    if (typeof Notification === 'undefined') {
+                        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                        if (isIOS) {
+                            display.value = "KHUSUS IPHONE:\n\n1. Bos wajib klik 'Add to Home Screen'\n2. Buka aplikasi dari Home Screen\n3. Pastikan iOS versi 16.4+\n\nDi browser biasa (Safari tab), tombol ini gak bisa diklik.";
+                        } else {
+                            display.value = "Browser lo ga support Notifikasi, Bos.";
+                        }
+                        return;
+                    }
+
                     // Re-request permission manually
                     const permission = await Notification.requestPermission();
                     if (permission !== 'granted') {

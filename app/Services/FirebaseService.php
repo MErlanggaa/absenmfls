@@ -66,13 +66,13 @@ class FirebaseService
                     'priority' => 'high',
                     'notification' => [
                         'click_action' => $data['url'] ?? url('/'),
-                        'sound' => 'default'
+                        'sound' => 'hidup-jokowi.mp3'
                     ]
                 ],
                 'apns' => [
                     'payload' => [
                         'aps' => [
-                            'sound' => 'default',
+                            'sound' => 'hidup-jokowi.mp3',
                             'badge' => 1,
                         ],
                     ],
@@ -84,6 +84,9 @@ class FirebaseService
                     'fcm_options' => [
                         'link' => $data['url'] ?? url('/'),
                     ],
+                    'notification' => [
+                        'sound' => '/hidup-jokowi.mp3'
+                    ]
                 ],
             ],
         ];
