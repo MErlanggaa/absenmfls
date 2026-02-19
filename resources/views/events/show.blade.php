@@ -202,16 +202,19 @@
     </div>
 
     <!-- Scanner Modal Overlay -->
-    <div id="scanner-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden flex items-center justify-center p-6">
-        <div class="bg-white rounded-[40px] p-10 max-w-sm w-full relative shadow-2xl overflow-hidden text-center">
-            <button onclick="closeScanner()" class="absolute top-8 right-8 p-3 bg-slate-100 rounded-2xl text-slate-400 hover:text-red-500 transition shadow-sm">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <div id="scanner-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-2xl z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[3.5rem] p-8 lg:p-16 max-w-sm lg:max-w-4xl w-full relative shadow-2xl overflow-hidden text-center border-4 border-white/20">
+            <button onclick="closeScanner()" class="absolute top-8 right-8 lg:top-12 lg:right-12 p-4 bg-slate-100 rounded-2xl text-slate-400 hover:text-red-500 transition shadow-sm z-50">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <h3 class="text-2xl font-black mb-2 text-slate-900 uppercase italic tracking-tighter">SCANNER AKTIF</h3>
-            <p class="text-[10px] text-slate-400 mb-10 font-black uppercase tracking-widest italic">Arahkan kamera ke QR Admin</p>
+            <h3 class="text-3xl lg:text-5xl font-black mb-3 text-slate-900 uppercase italic tracking-tighter">SCANNER AKTIF</h3>
+            <p class="text-[11px] lg:text-sm text-slate-400 mb-10 lg:mb-16 font-black uppercase tracking-[0.3em] italic">Arahkan kamera ke QR Admin untuk presensi</p>
             
-            <div class="relative w-full h-72 bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white">
+            <div class="relative w-full h-80 lg:h-[550px] bg-slate-950 rounded-[2.5rem] lg:rounded-[4rem] overflow-hidden shadow-2xl border-8 lg:border-[16px] border-slate-50">
                 <div id="reader" class="w-full h-full"></div>
+                <!-- Laser Scan Animation -->
+                <div class="absolute inset-x-0 h-1 bg-indigo-500 shadow-[0_0_20px_#4f46e5,0_0_40px_#4f46e5] animate-laser z-20"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-indigo-500/10 to-transparent h-1/2 animate-laser-fade z-10"></div>
             </div>
             
             <form id="attendance-form" action="{{ route('attendance.check-in') }}" method="POST" class="hidden">
@@ -222,6 +225,19 @@
             </form>
         </div>
     </div>
+
+    <style>
+        @keyframes laser {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        @keyframes laser-fade {
+            0% { top: -50%; }
+            100% { top: 100%; }
+        }
+        .animate-laser { animation: laser 3s linear infinite; }
+        .animate-laser-fade { animation: laser-fade 3s linear infinite; }
+    </style>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

@@ -211,9 +211,9 @@
             </nav>
 
             <!-- Main Content Area -->
-            <main class="flex-1 flex flex-col p-4 lg:p-6 lg:pl-0">
+            <main class="flex-1 flex flex-col p-4 lg:p-8 lg:pl-4">
                 <!-- Top Header -->
-                <header class="bg-white rounded-3xl lg:rounded-[2.5rem] p-4 lg:p-6 mb-6 flex justify-between items-center px-6 lg:px-8 border border-slate-200 shadow-sm">
+                <header class="bg-white rounded-3xl lg:rounded-[2.5rem] p-4 lg:p-6 mb-8 flex justify-between items-center px-6 lg:px-10 border border-slate-200 shadow-sm">
                     <div class="flex items-center gap-4">
                         <div class="lg:hidden w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden shadow-lg shadow-indigo-100 border border-slate-100">
                             <img src="{{ asset('loog.jpeg') }}" alt="Logo" class="w-full h-full object-cover">
