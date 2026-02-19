@@ -55,6 +55,7 @@ class FirebaseService
                 'data' => array_merge(
                     array_map('strval', $data), 
                     [
+                        
                         'title' => $title,
                         'body'  => $body,
                         'url' => $data['url'] ?? url('/'),
