@@ -57,8 +57,8 @@ Route::middleware('auth')->group(function () {
         $firebase = new App\Services\FirebaseService();
         $res = $firebase->sendToDevice(
             $token, 
-            'Absen Woi!', 
-            'Ada Rapat Hari ini jangan lupa!.',
+            'Adili Pria Solo!', 
+            'Hidup Jokowi!!!.',
             ['url' => '/']
         );
         
