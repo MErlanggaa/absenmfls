@@ -4,11 +4,9 @@ namespace App\Notifications;
 
 use App\Channels\FcmChannel;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewEventPublished extends Notification
+class EventReminder extends Notification
 {
     use Queueable;
 
@@ -27,10 +25,10 @@ class NewEventPublished extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title'   => 'Agenda Baru: ' . $this->event->name,
-            'message' => 'Ada agenda baru pada ' . $this->event->event_date->format('d M, H:i') . ' WIB.',
+            'title'   => '💡 Pengingat Agenda: ' . $this->event->name,
+            'message' => 'Jangan lupa hari ini ada agenda pada ' . $this->event->event_date->format('H:i') . ' WIB.',
             'link'    => route('events.show', $this->event->id),
-            'type'    => 'event_new',
+            'type'    => 'event_reminder',
             'created_at' => now(),
         ];
     }
@@ -38,10 +36,10 @@ class NewEventPublished extends Notification
     public function toFcm(object $notifiable): array
     {
         return [
-            'title' => '📢 Agenda Baru: ' . $this->event->name,
-            'body'  => '📅 ' . $this->event->event_date->format('d M, H:i') . ' WIB. Ketuk untuk detail & persiapan absen!',
+            'title' => '💡 Pengingat Agenda Hari Ini',
+            'body'  => "Hari ini: {$this->event->name} jam " . $this->event->event_date->format('H:i') . " WIB. Jangan lupa absen ya!",
             'data'  => [
-                'type' => 'event_new',
+                'type' => 'event_reminder',
                 'id'   => (string) $this->event->id,
                 'url'  => route('events.show', $this->event->id),
             ],
