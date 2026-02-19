@@ -139,17 +139,17 @@ class FirebasePushManager {
 
         document.body.appendChild(toast);
 
-        // Also trigger system notification if possible
+        // Juga tampilkan system notification (di status bar Android)
         if (Notification.permission === 'granted') {
             navigator.serviceWorker.ready.then(registration => {
                 registration.showNotification(title || 'MFLS', {
                     body: body || '',
-                    icon: '/loog.jpeg',
-                    badge: '/loog.jpeg',
-                    vibrate: [200, 100, 200],
+                    // PENTING: Tidak pakai icon - loog.jpeg terlalu besar (1563px), 
+                    // bikin Android diam-diam gagal tampilkan notifikasi
                     data: data,
-                    tag: 'mfls-notif-' + Date.now(), // Force individual notifications
-                    requireInteraction: true
+                    vibrate: [200, 100, 200],
+                    tag: 'mfls-notif-fg',
+                    renotify: true,
                 });
             });
         }
