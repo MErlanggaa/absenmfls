@@ -85,6 +85,25 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
+        public function kpis()
+    {
+        return $this->hasMany(Kpi::class, 'user_id');
+    }
+
+    public function givenKpis()
+    {
+        return $this->hasMany(Kpi::class, 'assessor_id');
+    }
+
+    public function canViewAllKPI(): bool
+    {
+        return $this->isSuperAdmin() || 
+               $this->isAdminIT() || 
+               $this->isAdministrasi() || 
+               $this->role->name === 'vice_project_director' || 
+               $this->role->name === 'project_director';
+    }
+
     public function isAdminIT(): bool
     {
         return $this->role->name === 'admin' && $this->department?->name === 'IT';
