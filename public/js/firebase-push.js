@@ -133,9 +133,12 @@ class FirebasePushManager {
         const { title, body } = payload.notification || {};
         const data = payload.data || {};
 
+        // Get custom sound URL or use default
+        const soundUrl = data.sound || data.sound_url || '/hidup-jokowi.mp3';
+
         // Play custom notification sound
         try {
-            const audio = new Audio('/hidup-jokowi.mp3?v=' + Date.now());
+            const audio = new Audio(soundUrl + '?v=' + Date.now());
             audio.volume = 1.0;
             const playPromise = audio.play();
             if (playPromise !== undefined) {

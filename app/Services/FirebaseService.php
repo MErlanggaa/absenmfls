@@ -29,11 +29,12 @@ class FirebaseService
 
     /**
      * Send a push notification to a single device token.
+     * @param string $soundUrl Optional custom sound file URL (e.g., '/path/to/sound.mp3')
      */
     /**
      * @return bool|string Returns true on success, 'unregistered' if token is expired, false on other errors.
      */
-    public function sendToDevice(string $fcmToken, string $title, string $body, array $data = []): bool|string
+    public function sendToDevice(string $fcmToken, string $title, string $body, array $data = [], ?string $soundUrl = null): bool|string
     {
         if (empty($this->projectId)) {
             Log::warning('Firebase: FIREBASE_PROJECT_ID not set in .env');
@@ -66,13 +67,13 @@ class FirebaseService
                     'priority' => 'high',
                     'notification' => [
                         'click_action' => $data['url'] ?? url('/'),
-                        'sound' => 'hidup-jokowi.mp3'
+                        'sound' => $soundUrl ? basename($soundUrl) : 'hidup-jokowi.mp3'
                     ]
                 ],
                 'apns' => [
                     'payload' => [
                         'aps' => [
-                            'sound' => 'hidup-jokowi.mp3',
+                            'sound' => $soundUrl ? basename($soundUrl) : 'hidup-jokowi.mp3',
                             'badge' => 1,
                         ],
                     ],
@@ -85,7 +86,7 @@ class FirebaseService
                         'link' => $data['url'] ?? url('/'),
                     ],
                     'notification' => [
-                        'sound' => '/hidup-jokowi.mp3'
+                        'sound' => $soundUrl ?? '/hidup-jokowi.mp3'
                     ]
                 ],
             ],
@@ -120,13 +121,14 @@ class FirebaseService
 
     /**
      * Send notification to multiple device tokens (multicast).
+     * @param string|null $soundUrl Optional custom sound file URL
      */
-    public function sendToMultiple(array $fcmTokens, string $title, string $body, array $data = []): array
+    public function sendToMultiple(array $fcmTokens, string $title, string $body, array $data = [], ?string $soundUrl = null): array
     {
         $results = ['success' => 0, 'failure' => 0, 'unregistered' => []];
 
         foreach ($fcmTokens as $token) {
-            $result = $this->sendToDevice($token, $title, $body, $data);
+            $result = $this->sendToDevice($token, $title, $body, $data, $soundUrl);
             if ($result === true) {
                 $results['success']++;
             } elseif ($result === 'unregistered') {

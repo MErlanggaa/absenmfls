@@ -40,13 +40,14 @@ function showNotification(payload) {
     var notification = payload.notification || {};
     var title = notification.title || data.title || 'MFLS Notifikasi';
     var body = notification.body || data.body || 'Ada notifikasi baru';
+    var soundUrl = data.sound || notification.sound || '/hidup-jokowi.mp3';
 
     var link = '';
     if (payload.fcmOptions && payload.fcmOptions.link) link = payload.fcmOptions.link;
     else if (data.url) link = data.url;
     else link = '/';
 
-    console.log('[SW] Showing notification:', title, body, link);
+    console.log('[SW] Showing notification:', title, body, link, 'Sound:', soundUrl);
 
     var notificationOptions = {
         body: body,
@@ -54,7 +55,7 @@ function showNotification(payload) {
         badge: '/loog.jpeg',
         data: { url: link },
         vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500], // Custom vibration
-        sound: '/hidup-jokowi.mp3', // Supported on some desktop browsers
+        sound: soundUrl, // Dynamic sound from payload or fallback to default
         tag: 'mfls-notif',
         renotify: true,
     };

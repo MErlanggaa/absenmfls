@@ -47,6 +47,7 @@ class FcmChannel
             $title = $fcmData['title'] ?? 'Notifikasi Baru';
             $body  = $fcmData['body']  ?? '';
             $data  = $fcmData['data']  ?? [];
+            $soundUrl = $fcmData['sound_url'] ?? null;
 
             Log::info("FcmChannel: Preparing to send to user {$notifiable->id}. Title: {$title}");
 
@@ -62,7 +63,7 @@ class FcmChannel
 
             Log::info("FcmChannel: Found " . count($tokens) . " tokens for user {$notifiable->id}. Sending...");
 
-            $results = $this->firebase->sendToMultiple($tokens, $title, $body, $data);
+            $results = $this->firebase->sendToMultiple($tokens, $title, $body, $data, $soundUrl);
             
             Log::info('FcmChannel: Send results', ['success' => $results['success'], 'failure' => $results['failure'], 'unregistered_count' => count($results['unregistered'])]);
 
