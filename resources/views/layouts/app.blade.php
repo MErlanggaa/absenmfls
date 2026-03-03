@@ -138,7 +138,7 @@
                             <span>Riwayat Absen</span>
                         </a>
 
-                        @if(auth()->user()->canViewAllKPI() || auth()->user()->isKepalaDivisi())
+                        @if(auth()->user()->canViewAllKPI() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi() || auth()->user()->isAnggota())
                         <a href="{{ route('kpis.index') }}" class="sidebar-link {{ request()->routeIs('kpis.*') ? 'active' : '' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             <span>KPI</span>
@@ -208,7 +208,7 @@
                     <span>Profil</span>
                 </a>
 
-                @if(auth()->user()->canViewAllKPI() || auth()->user()->isKepalaDivisi())
+                @if(auth()->user()->canViewAllKPI() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi() || auth()->user()->isAnggota())
                 <a href="{{ route('kpis.index') }}" class="mobile-nav-link {{ request()->routeIs('kpis.*') ? 'active' : '' }}">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span>KPI</span>

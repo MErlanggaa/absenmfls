@@ -4,7 +4,7 @@
     </x-slot>
 
     <div class="space-y-6 max-w-5xl mx-auto">
-        <form action="{{ route('kpis.store', $user->id) }}" method="POST" id="kpiForm">
+        <form action="{{ route('kpis.store', $user->id) }}" method="POST" id="kpiForm" enctype="multipart/form-data">
             @csrf
             
             <div class="premium-card mb-6 border-t-4 border-indigo-600">
@@ -41,6 +41,7 @@
                         <div class="uppercase text-indigo-700">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</div>
                     </div>
                 </div>
+            </div>
 
                 @if ($errors->any())
                     <div class="bg-red-50 text-red-600 p-4 rounded-2xl text-xs font-bold mb-6 border border-red-100 italic">
@@ -270,6 +271,18 @@
                             <td class="border border-slate-200 p-2 font-bold uppercase text-slate-700">Tidak Mencapai Target</td>
                         </tr>
                     </table>
+                </div>
+            </div>
+
+            <!-- TANDA TANGAN -->
+            <div class="premium-card mb-10 p-6 border-l-4 border-indigo-600">
+                <h4 class="text-xs font-black uppercase text-indigo-900 tracking-widest mb-4">Tanda Tangan Kepala Departemen</h4>
+                <p class="text-[10px] text-slate-500 mb-4">* Wajib menyertakan foto tanda tangan asli Anda (Kepala Departemen) untuk validasi pengisian KPI.</p>
+                <div class="flex items-center gap-4">
+                    <div class="flex-1">
+                        <label for="head_signature" class="block text-sm font-medium text-slate-700 mb-2">Upload Gambar Tanda Tangan (PNG/JPG)</label>
+                        <input type="file" name="head_signature" id="head_signature" accept="image/png, image/jpeg, image/jpg" required class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-slate-200 rounded-xl p-2 transition cursor-pointer">
+                    </div>
                 </div>
             </div>
 

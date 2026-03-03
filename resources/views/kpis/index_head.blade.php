@@ -20,6 +20,9 @@
                             <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest">Nama Anggota</th>
                             <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest">Email</th>
                             <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest">Status Penilaian</th>
+                            @if(auth()->user()->isKepalaDivisi() || auth()->user()->canViewAllKPI())
+                            <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest">Status VPD</th>
+                            @endif
                             <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest text-right rounded-tr-xl">Aksi</th>
                         </tr>
                     </thead>
@@ -45,13 +48,30 @@
                                         </span>
                                     @endif
                                 </td>
+                                @if(auth()->user()->isKepalaDivisi() || auth()->user()->canViewAllKPI())
+                                <td class="p-4">
+                                    @if($kpi && $kpi->vpd_signature)
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest gap-2">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                            Disahkan
+                                        </span>
+                                    @elseif($kpi)
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black bg-amber-50 text-amber-600 border border-amber-100 uppercase tracking-widest gap-2">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            Menunggu
+                                        </span>
+                                    @else
+                                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">-</span>
+                                    @endif
+                                </td>
+                                @endif
                                 <td class="p-4 space-x-2 text-right">
                                     @if($kpi)
                                         <a href="{{ route('kpis.show', $kpi->id) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-800 hover:text-white transition-all shadow-sm border border-slate-200 text-xs font-bold tracking-widest uppercase">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                             Lihat
                                         </a>
-                                    @else
+                                    @elseif(auth()->user()->isKepalaDivisi())
                                         <a href="{{ route('kpis.create', $member->id) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm border border-indigo-100 text-xs font-bold tracking-widest uppercase">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                             Isi KPI

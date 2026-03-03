@@ -48,7 +48,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/kpis', [\App\Http\Controllers\KpiController::class , 'index'])->name('kpis.index');
         Route::get('/kpis/create/{user}', [\App\Http\Controllers\KpiController::class , 'create'])->name('kpis.create');
         Route::post('/kpis/store/{user}', [\App\Http\Controllers\KpiController::class , 'store'])->name('kpis.store');
+        Route::post('/kpis/{kpi}/sign-vpd', [\App\Http\Controllers\KpiController::class , 'signVpd'])->name('kpis.sign-vpd');
         Route::get('/kpis/show/{kpi}', [\App\Http\Controllers\KpiController::class , 'show'])->name('kpis.show');
+        Route::get('/kpis/{kpi}/download', [\App\Http\Controllers\KpiController::class , 'downloadPdf'])->name('kpis.download');
+        Route::get('/kpis-bulk-download', [\App\Http\Controllers\KpiController::class , 'downloadZip'])->name('kpis.download-zip');
 
         // Attendance Manual
         Route::post('/attendances/manual', [\App\Http\Controllers\AttendanceController::class , 'manualStore'])->name('attendances.manual-store');
@@ -73,6 +76,7 @@ Route::middleware('auth')->group(function () {
             return $res ? 'BERHASIL DIKIRIM! Cek HP.' : 'GAGAL MENGIRIM! Cek Log Laravel (storage/logs/laravel.log)';
         }
         );
-        Route::delete('/fcm-token', [App\Http\Controllers\Api\FcmTokenController::class , 'destroy'])->name('fcm.destroy');    });
+        Route::delete('/fcm-token', [App\Http\Controllers\Api\FcmTokenController::class , 'destroy'])->name('fcm.destroy');
+    });
 
 require __DIR__ . '/auth.php';

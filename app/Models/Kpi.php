@@ -13,6 +13,9 @@ class Kpi extends Model
         'behavior_scores',
         'total_value',
         'index_score',
+        'head_signature',
+        'vpd_signature',
+        'vpd_notes',
     ];
 
     protected $casts = [
