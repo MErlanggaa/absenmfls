@@ -139,9 +139,15 @@
                         </a>
 
                         @if(auth()->user()->canViewAllKPI() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi() || auth()->user()->isAnggota())
-                        <a href="{{ route('kpis.index') }}" class="sidebar-link {{ request()->routeIs('kpis.*') ? 'active' : '' }}">
+                        @php $unreadKpiCount = auth()->user()->unreadNotifications->filter(fn($n) => $n->type === 'App\Notifications\KpiNotification')->count(); @endphp
+                        <a href="{{ route('kpis.index') }}" class="sidebar-link {{ request()->routeIs('kpis.*') ? 'active' : '' }} relative">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             <span>KPI</span>
+                            @if($unreadKpiCount > 0)
+                                <span class="absolute top-3 right-6 w-5 h-5 bg-indigo-600 rounded-full text-[8px] flex items-center justify-center text-white border-2 border-white font-black shadow-lg">
+                                    {{ $unreadKpiCount }}
+                                </span>
+                            @endif
                         </a>
                         @endif
 
@@ -209,9 +215,15 @@
                 </a>
 
                 @if(auth()->user()->canViewAllKPI() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi() || auth()->user()->isAnggota())
-                <a href="{{ route('kpis.index') }}" class="mobile-nav-link {{ request()->routeIs('kpis.*') ? 'active' : '' }}">
+                @php $unreadKpiCount = auth()->user()->unreadNotifications->filter(fn($n) => $n->type === 'App\Notifications\KpiNotification')->count(); @endphp
+                <a href="{{ route('kpis.index') }}" class="mobile-nav-link {{ request()->routeIs('kpis.*') ? 'active' : '' }} relative">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span>KPI</span>
+                    @if($unreadKpiCount > 0)
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-indigo-600 rounded-full text-[8px] flex items-center justify-center text-white border border-white font-black shadow-sm">
+                            {{ $unreadKpiCount }}
+                        </span>
+                    @endif
                 </a>
                 @endif
 
