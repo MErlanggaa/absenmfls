@@ -105,12 +105,12 @@ class User extends Authenticatable
 
     public function isAdminIT(): bool
     {
-        return $this->role->name === 'admin' && $this->department?->name === 'IT';
+        return $this->role->name === 'admin';
     }
 
     public function isAdministrasi(): bool
     {
-        return $this->department?->name === 'Administrasi';
+        return $this->department?->name === 'Departemen Administrasi Data Evaluation & Reporting';
     }
 
     public function isKepalaDivisi(): bool
@@ -125,7 +125,7 @@ class User extends Authenticatable
 
     public function isSuperAdmin(): bool
     {
-        return $this->email === 'admin@mfls.com';
+        return $this->role->name === 'admin';
     }
 
     /**

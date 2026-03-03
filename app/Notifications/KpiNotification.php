@@ -73,6 +73,7 @@ class KpiNotification extends Notification
                     'type' => 'kpi_created',
                     'id' => (string)$this->kpi->id,
                     'url' => route('kpis.show', $this->kpi->id),
+                    'sound_url' => '/hidup-jokowi.mp3', // Custom notification sound
                 ],
             ];
         }
@@ -84,6 +85,7 @@ class KpiNotification extends Notification
                 'type' => 'kpi_approved',
                 'id' => (string)$this->kpi->id,
                 'url' => route('kpis.show', $this->kpi->id),
+                'sound_url' => '/hidup-jokowi.mp3', // Custom notification sound
             ],
         ];
     }

@@ -77,6 +77,7 @@ class NewApprovalRequest extends Notification
                 'type'   => 'approval_request',
                 'id'     => (string) $this->approvalRequest->id,
                 'url'    => route('approval-requests.show', $this->approvalRequest->id),
+                'sound_url' => '/hidup-jokowi.mp3', // Custom notification sound
             ],
         ];
     }

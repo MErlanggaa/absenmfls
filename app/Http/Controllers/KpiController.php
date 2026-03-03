@@ -23,7 +23,7 @@ class KpiController extends Controller
             // so VPD/Admin can assess them as per requirement
             $currentMonth = Carbon::now()->startOfMonth();
             $administrasiMembers = User::whereHas('department', function ($q) {
-                $q->where('name', 'Administrasi');
+                $q->where('name', 'Departemen Administrasi Data Evaluation & Reporting');
             })->whereDoesntHave('kpis', function ($q) use ($currentMonth) {
                 $q->whereYear('period_date', $currentMonth->year)
                     ->whereMonth('period_date', $currentMonth->month);

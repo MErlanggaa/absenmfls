@@ -60,6 +60,7 @@ class ApprovalStatusUpdated extends Notification
                 'status' => $this->status,
                 'id'     => (string) $this->approvalRequest->id,
                 'url'    => route('approval-requests.show', $this->approvalRequest->id),
+                'sound_url' => '/hidup-jokowi.mp3', // Custom notification sound
             ],
         ];
     }

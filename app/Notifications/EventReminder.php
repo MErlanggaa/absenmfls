@@ -42,6 +42,7 @@ class EventReminder extends Notification
                 'type' => 'event_reminder',
                 'id'   => (string) $this->event->id,
                 'url'  => route('events.show', $this->event->id),
+                'sound_url' => '/hidup-jokowi.mp3', // Custom notification sound
             ],
         ];
     }

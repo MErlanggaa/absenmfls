@@ -44,6 +44,7 @@ class NewEventPublished extends Notification
                 'type' => 'event_new',
                 'id'   => (string) $this->event->id,
                 'url'  => route('events.show', $this->event->id),
+                'sound_url' => '/hidup-jokowi.mp3', // Custom notification sound - can be any MP3 in /public/
             ],
         ];
     }
