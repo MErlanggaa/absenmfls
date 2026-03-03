@@ -133,7 +133,7 @@ class PengurusSeeders extends Seeder
 
             // use first name for email per request
             $firstName = explode(' ', $nama)[0];
-            $email = strtolower($firstName) . '.mfls@com';
+            $email = strtolower($firstName) . '.mfls@gmail.com';
 
             $attributes = [
                 'name' => $nama,

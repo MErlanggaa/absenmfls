@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
                 $local = trim($local, '.');
 
                 User::firstOrCreate(
-                    ['email' => $local . '@mfls.com'],
+                    ['email' => $local . '@mfls.gmail.com'],
                     [
                         'name' => 'Ka. Departemen '.$deptName,
                         'password' => Hash::make('password123'),
@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
         // Create Users
         // 1. Admin (Dept IT)
         User::firstOrCreate(
-        ['email' => strtolower(str_replace(' ', '.', 'Admin IT')) . '@mfls.com'],
+        ['email' => strtolower(str_replace(' ', '.', 'Admin IT')) . '@mfls.gmail.com'],
         [
             'name' => 'Admin IT',
             'password' => Hash::make('password123'),
@@ -98,7 +98,7 @@ class DatabaseSeeder extends Seeder
 
         if (! User::where('role_id', $vpdRoleId)->exists()) {
             User::firstOrCreate(
-                ['email' => 'vpd@mfls.com'],
+                ['email' => 'vpd@mfls.gmail.com'],
                 [
                     'name' => 'Vice Project Director',
                     'password' => Hash::make('password123'),
@@ -109,7 +109,7 @@ class DatabaseSeeder extends Seeder
 
         if (! User::where('role_id', $pdRoleId)->exists()) {
             User::firstOrCreate(
-                ['email' => 'pd@mfls.com'],
+                ['email' => 'pd@mfls.gmail.com'],
                 [
                     'name' => 'Project Director',
                     'password' => Hash::make('password123'),
