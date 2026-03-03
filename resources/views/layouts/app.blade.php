@@ -52,7 +52,8 @@
             };
             window.firebaseVapidKey = "{{ config('firebase.vapid_key') }}";
         </script>
-        @vite(['resources/js/app.js'])
+        <!-- Alpine.js CDN -->
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script type="module" src="{{ asset('js/firebase-push.js') }}"></script>
 
         <style type="text/tailwindcss">
