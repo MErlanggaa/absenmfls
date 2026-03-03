@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/kpis', [\App\Http\Controllers\KpiController::class , 'index'])->name('kpis.index');
         Route::get('/kpis/create/{user}', [\App\Http\Controllers\KpiController::class , 'create'])->name('kpis.create');
         Route::post('/kpis/store/{user}', [\App\Http\Controllers\KpiController::class , 'store'])->name('kpis.store');
-        Route::post('/kpis/{kpi}/sign-vpd', [\App\Http\Controllers\KpiController::class , 'signVpd'])->name('kpis.sign-vpd');
+        Route::post('/kpis/{kpi}/sign-pd', [\App\Http\Controllers\KpiController::class , 'signPd'])->name('kpis.sign-pd');
         Route::get('/kpis/show/{kpi}', [\App\Http\Controllers\KpiController::class , 'show'])->name('kpis.show');
         Route::get('/kpis/{kpi}/download', [\App\Http\Controllers\KpiController::class , 'downloadPdf'])->name('kpis.download');
         Route::get('/kpis-bulk-download', [\App\Http\Controllers\KpiController::class , 'downloadZip'])->name('kpis.download-zip');

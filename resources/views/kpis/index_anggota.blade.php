@@ -6,7 +6,7 @@
     <div class="space-y-6 max-w-7xl mx-auto">
         <div class="premium-card mb-6 border-t-4 border-indigo-600">
             <h1 class="text-2xl font-black italic text-indigo-900 uppercase tracking-tighter mb-2">Penilaian KPI Saya</h1>
-            <p class="text-sm font-medium text-slate-500">Berikut adalah daftar KPI Anda yang telah selesai dinilai dan disahkan oleh Vice Project Director.</p>
+            <p class="text-sm font-medium text-slate-500">Berikut adalah daftar KPI Anda yang telah selesai dinilai dan disahkan oleh Project Director.</p>
         </div>
 
         <div class="premium-card p-0 overflow-hidden">
@@ -54,7 +54,7 @@
                         @empty
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center text-slate-500 font-medium italic">
-                                Belum ada penilaian KPI untuk Anda yang telah disahkan oleh Vice Project Director saat ini.
+                                Belum ada penilaian KPI untuk Anda yang telah disahkan oleh Project Director saat ini.
                             </td>
                         </tr>
                         @endforelse

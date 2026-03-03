@@ -21,7 +21,7 @@
                             <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest">Email</th>
                             <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest">Status Penilaian</th>
                             @if(auth()->user()->isKepalaDivisi() || auth()->user()->canViewAllKPI())
-                            <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest">Status VPD</th>
+                            <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest">Status PD</th>
                             @endif
                             <th class="p-4 border-b border-indigo-100 text-[10px] font-black uppercase text-indigo-600 tracking-widest text-right rounded-tr-xl">Aksi</th>
                         </tr>
@@ -50,7 +50,7 @@
                                 </td>
                                 @if(auth()->user()->isKepalaDivisi() || auth()->user()->canViewAllKPI())
                                 <td class="p-4">
-                                    @if($kpi && $kpi->vpd_signature)
+                                    @if($kpi && $kpi->pd_signature)
                                         <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest gap-2">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                             Disahkan

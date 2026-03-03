@@ -39,8 +39,8 @@
         .signature-section { margin-top: 50px; width: 100%; page-break-inside: avoid; }
         .sig-box { width: 45%; float: left; text-align: center; }
         .sig-box-right { width: 45%; float: right; text-align: center; }
-        .sig-line { margin-top: 10px; border-top: 1px solid #000; width: 80%; margin-left: auto; margin-right: auto; padding-top: 5px; font-weight: bold; }
-        .sig-img { max-width: 150px; max-height: 80px; margin-bottom: 5px; }
+        .sig-line { margin-top: 10px; border-top: 1px solid #000; width: 90%; margin-left: auto; margin-right: auto; padding-top: 5px; font-weight: bold; }
+        .sig-img { max-width: 120px; max-height: 60px; margin-bottom: 5px; }
         
         .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8px; color: #aaa; }
         .clearfix::after { content: ""; clear: both; display: table; }
@@ -157,16 +157,33 @@
             <div class="final-index">{{ $kpi->index_score }}</div>
         </div>
 
-        @if($kpi->vpd_notes)
+        @if($kpi->pd_notes)
         <div class="notes-section">
-            <div class="notes-title">Catatan / Saran dari Vice Project Director</div>
-            <div style="font-style: italic; color: #334155;">"{{ $kpi->vpd_notes }}"</div>
+            <div class="notes-title">Catatan / Saran dari Project Director</div>
+            <div style="font-style: italic; color: #334155;">"{{ $kpi->pd_notes }}"</div>
         </div>
         @endif
     </div>
 
     <div class="signature-section clearfix">
+        <!-- Project Director (LEFT) -->
         <div class="sig-box">
+            <div style="font-size: 9px; margin-bottom: 10px;">Mengesahkan,</div>
+            @if($kpi->pd_signature)
+                @if($kpi->pd_signature === 'default_pd_signature')
+                    <img src="{{ public_path('image.png') }}" class="sig-img">
+                @else
+                    <img src="{{ public_path('storage/' . $kpi->pd_signature) }}" class="sig-img">
+                @endif
+            @else
+                <div style="height: 60px;"></div>
+            @endif
+            <div class="sig-line">{{ $pd->name ?? 'Project Director' }}</div>
+            <div style="font-size: 8px;">Project Director</div>
+        </div>
+
+        <!-- Kepala Departemen (RIGHT) -->
+        <div class="sig-box-right">
             <div style="font-size: 9px; margin-bottom: 10px;">{{ \Carbon\Carbon::parse($kpi->period_date)->translatedFormat('F Y') }}</div>
             @if($kpi->head_signature)
                 <img src="{{ public_path('storage/' . $kpi->head_signature) }}" class="sig-img">
@@ -175,17 +192,6 @@
             @endif
             <div class="sig-line">{{ $kpi->assessor->name }}</div>
             <div style="font-size: 8px;">Kepala Departemen</div>
-        </div>
-
-        <div class="sig-box-right">
-            <div style="font-size: 9px; margin-bottom: 10px;">Mengetahui,</div>
-            @if($kpi->vpd_signature)
-                <img src="{{ public_path('storage/' . $kpi->vpd_signature) }}" class="sig-img">
-            @else
-                <div style="height: 60px;"></div>
-            @endif
-            <div class="sig-line">{{ $vpd->name }}</div>
-            <div style="font-size: 8px;">Vice Project Director</div>
         </div>
     </div>
 

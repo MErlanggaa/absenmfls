@@ -15,7 +15,9 @@ class Kpi extends Model
         'index_score',
         'head_signature',
         'vpd_signature',
+        'pd_signature',
         'vpd_notes',
+        'pd_notes',
     ];
 
     protected $casts = [

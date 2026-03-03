@@ -259,7 +259,64 @@
 
         <!-- SIGNATURES SECTION -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <!-- HEAD OF DEPT SIGNATURE -->
+            <!-- PD SIGNATURE (LEFT) -->
+            <div class="premium-card p-6 flex flex-col items-center justify-start text-center h-full">
+                <h4 class="text-xs font-black uppercase text-indigo-900 tracking-widest mb-4">Project Director</h4>
+                @if($kpi->pd_signature)
+                    <div class="w-48 h-32 border-b-2 border-slate-800 mb-2 flex items-center justify-center">
+                        @if($kpi->pd_signature === 'default_pd_signature')
+                            <img src="{{ asset('image.png') }}" alt="Tanda Tangan PD" class="max-w-full max-h-full object-contain">
+                        @else
+                            <img src="{{ asset('storage/' . $kpi->pd_signature) }}" alt="Tanda Tangan PD" class="max-w-full max-h-full object-contain">
+                        @endif
+                    </div>
+                    <p class="font-bold text-slate-700 uppercase mb-4">{{ $pd->name ?? 'Project Director' }}</p>
+
+                    @if($kpi->pd_notes)
+                        <div class="w-full mt-4 p-4 bg-amber-50 rounded-xl border border-amber-100 text-left">
+                            <h5 class="text-[10px] font-black uppercase text-amber-800 tracking-widest mb-2 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                Catatan / Saran Project Director
+                            </h5>
+                            <p class="text-sm text-slate-700 font-medium italic">"{{ $kpi->pd_notes }}"</p>
+                        </div>
+                    @endif
+                @else
+                    @if(in_array(auth()->user()->role->name, ['project_director', 'admin']))
+                        <div class="w-full text-left">
+                            <form action="{{ route('kpis.sign-pd', $kpi->id) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 w-full">
+                                @csrf
+                                
+                                <div class="bg-amber-50 p-3 rounded-xl border border-amber-100 mb-2">
+                                    <p class="text-[10px] text-amber-800 font-bold leading-tight">
+                                        Klik "SahKan" untuk menggunakan TTD Default (`image.png`), atau upload TTD baru di bawah ini.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label for="pd_notes" class="block text-xs font-bold text-slate-700 mb-2">Catatan / Saran untuk Anggota (Opsional)</label>
+                                    <textarea name="pd_notes" id="pd_notes" rows="3" class="w-full border-slate-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" placeholder="Tuliskan evaluasi, saran, atau catatan khusus di sini..."></textarea>
+                                </div>
+
+                                <div>
+                                    <label for="pd_signature" class="block text-xs font-bold text-slate-700 mb-2">Upload TTD Baru (Opsional)</label>
+                                    <input type="file" name="pd_signature" id="pd_signature" accept="image/png, image/jpeg, image/jpg" class="block w-full text-xs text-slate-500 file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-slate-200 rounded-xl p-2 transition cursor-pointer bg-white">
+                                </div>
+                                <button type="submit" class="w-full mt-2 bg-slate-800 hover:bg-black text-white font-black text-xs uppercase tracking-widest py-3 rounded-xl transition">
+                                    SahKan KPI
+                                </button>
+                            </form>
+                        </div>
+                    @else
+                        <div class="w-48 h-32 border-b-2 border-slate-300 mb-2 flex items-center justify-center bg-slate-50 text-slate-400 text-xs italic">
+                            Menunggu Tanda Tangan PD
+                        </div>
+                        <p class="font-bold text-slate-700 uppercase">{{ $pd->name ?? 'Project Director' }}</p>
+                    @endif
+                @endif
+            </div>
+
+            <!-- HEAD OF DEPT SIGNATURE (RIGHT) -->
             <div class="premium-card p-6 flex flex-col items-center justify-start text-center h-full">
                 <h4 class="text-xs font-black uppercase text-indigo-900 tracking-widest mb-4">Kepala Departemen</h4>
                 @if($kpi->head_signature)
@@ -272,53 +329,6 @@
                         Belum ada tanda tangan
                     </div>
                     <p class="font-bold text-slate-700 uppercase mb-4">{{ $kpi->assessor->name }}</p>
-                @endif
-            </div>
-
-            <!-- VPD SIGNATURE -->
-            <div class="premium-card p-6 flex flex-col items-center justify-start text-center h-full">
-                <h4 class="text-xs font-black uppercase text-indigo-900 tracking-widest mb-4">Vice Project Director</h4>
-                @if($kpi->vpd_signature)
-                    <div class="w-48 h-32 border-b-2 border-slate-800 mb-2 flex items-center justify-center">
-                        <img src="{{ asset('storage/' . $kpi->vpd_signature) }}" alt="Tanda Tangan VPD" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <p class="font-bold text-slate-700 uppercase mb-4">{{ $vpd->name ?? 'Vice Project Director' }}</p>
-
-                    @if($kpi->vpd_notes)
-                        <div class="w-full mt-4 p-4 bg-amber-50 rounded-xl border border-amber-100 text-left">
-                            <h5 class="text-[10px] font-black uppercase text-amber-800 tracking-widest mb-2 flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                Catatan / Saran VPD
-                            </h5>
-                            <p class="text-sm text-slate-700 font-medium italic">"{{ $kpi->vpd_notes }}"</p>
-                        </div>
-                    @endif
-                @else
-                    @if(in_array(auth()->user()->role->name, ['vice_project_director', 'project_director', 'admin']))
-                        <div class="w-full text-left">
-                            <form action="{{ route('kpis.sign-vpd', $kpi->id) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 w-full">
-                                @csrf
-                                
-                                <div>
-                                    <label for="vpd_notes" class="block text-xs font-bold text-slate-700 mb-2">Catatan / Saran untuk Anggota (Opsional)</label>
-                                    <textarea name="vpd_notes" id="vpd_notes" rows="3" class="w-full border-slate-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" placeholder="Tuliskan evaluasi, saran, atau catatan khusus di sini..."></textarea>
-                                </div>
-
-                                <div>
-                                    <label for="vpd_signature" class="block text-xs font-bold text-slate-700 mb-2">Upload Tanda Tangan VPD (PNG/JPG)</label>
-                                    <input type="file" name="vpd_signature" id="vpd_signature" accept="image/png, image/jpeg, image/jpg" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-slate-200 rounded-xl p-2 transition cursor-pointer bg-white">
-                                </div>
-                                <button type="submit" class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs uppercase tracking-widest py-3 rounded-xl transition">
-                                    Simpan & Sahkan KPI
-                                </button>
-                            </form>
-                        </div>
-                    @else
-                        <div class="w-48 h-32 border-b-2 border-slate-300 mb-2 flex items-center justify-center bg-slate-50 text-slate-400 text-xs italic">
-                            Menunggu Tanda Tangan VPD
-                        </div>
-                        <p class="font-bold text-slate-700 uppercase">{{ $vpd->name ?? 'Vice Project Director' }}</p>
-                    @endif
                 @endif
             </div>
         </div>
