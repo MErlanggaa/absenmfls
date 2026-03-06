@@ -12,9 +12,11 @@
                     
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium text-gray-900">Riwayat Pengajuan</h3>
-                        <a href="{{ route('approval-requests.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
-                            + Buat Pengajuan Baru
-                        </a>
+                        @if(!in_array(auth()->user()->role->name, ['project_director', 'vice_project_director']))
+                            <a href="{{ route('approval-requests.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
+                                + Buat Pengajuan Baru
+                            </a>
+                        @endif
                     </div>
 
                     @if(session('success'))

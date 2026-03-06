@@ -17,7 +17,12 @@
                 <!-- Left: Meeting Info -->
                 <div class="lg:col-span-2 space-y-8">
                     <div class="premium-card relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-8">
+                        <div class="absolute top-0 right-0 p-8 flex items-center gap-3">
+                            @if(auth()->user()->role->name === 'admin' || auth()->id() === $event->created_by)
+                                <a href="{{ route('events.edit', $event->id) }}" class="p-2 bg-amber-50 text-amber-600 rounded-full hover:bg-amber-100 transition shadow-sm border border-amber-100" title="Edit Rapat">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </a>
+                            @endif
                             @if($event->is_active)
                                 <span class="bg-green-50 text-green-600 text-[10px] font-black uppercase px-4 py-2 rounded-full border border-green-100 tracking-widest italic">Aktif</span>
                             @else
