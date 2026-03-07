@@ -140,7 +140,7 @@
                             <span>Riwayat Absen</span>
                         </a>
 
-                        @if((auth()->user()->isAnggota() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi()) && !(auth()->user()->isKepalaDivisi() && (auth()->user()->isRegionalAndOutreach() || auth()->user()->isAdministrasi())))
+                        @if(!auth()->user()->isKepalaDivisi() && (auth()->user()->isAnggota() || auth()->user()->isAdministrasi()))
                         @php $unreadKpiCount = auth()->user()->unreadNotifications->filter(fn($n) => $n->type === 'App\Notifications\KpiNotification')->count(); @endphp
                         <a href="{{ route('kpis.index') }}" class="sidebar-link {{ request()->routeIs('kpis.index') ? 'active' : '' }} relative">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -230,7 +230,7 @@
                     <span>Profil</span>
                 </a>
 
-                @if((auth()->user()->isAnggota() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi()) && !(auth()->user()->isKepalaDivisi() && (auth()->user()->isRegionalAndOutreach() || auth()->user()->isAdministrasi())))
+                @if(!auth()->user()->isKepalaDivisi() && (auth()->user()->isAnggota() || auth()->user()->isAdministrasi()))
                 @php $unreadKpiCount = auth()->user()->unreadNotifications->filter(fn($n) => $n->type === 'App\Notifications\KpiNotification')->count(); @endphp
                 <a href="{{ route('kpis.index') }}" class="mobile-nav-link {{ request()->routeIs('kpis.index') ? 'active' : '' }} relative">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
