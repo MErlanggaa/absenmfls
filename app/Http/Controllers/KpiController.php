@@ -15,47 +15,61 @@ class KpiController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->canViewAllKPI()) {
-            // Admin/Project Director/VPD sees all KPIs
-            $kpis = Kpi::with(['user.department', 'assessor'])->latest()->paginate(20);
+        // Normal Anggota sees their own past KPIs BUT only if signed by PD
+        $kpis = Kpi::where('user_id', $user->id)
+            ->whereNotNull('pd_signature')
+            ->latest()
+            ->paginate(20);
 
-            // Fetch members of Administrasi department who haven't been assessed this month
-            // so VPD/Admin can assess them as per requirement
-            $currentMonth = Carbon::now()->startOfMonth();
-            $administrasiMembers = User::whereHas('department', function ($q) {
-                $q->where('name', 'Departemen Administrasi Data Evaluation & Reporting');
-            })->whereDoesntHave('kpis', function ($q) use ($currentMonth) {
-                $q->whereYear('period_date', $currentMonth->year)
-                    ->whereMonth('period_date', $currentMonth->month);
-            })->get();
+        return view('kpis.index_anggota', compact('kpis'));
+    }
 
-            return view('kpis.index_admin', compact('kpis', 'administrasiMembers'));
+    public function indexHead(Request $request)
+    {
+        $user = auth()->user();
+
+        if (!$user->isKepalaDivisi()) {
+            abort(403, 'Akses ditolak.');
         }
-        elseif ($user->isKepalaDivisi()) {
-            // Kepala Departemen sees their own department members
-            $members = User::where('department_id', $user->department_id)
-                ->where('id', '!=', $user->id)
-                ->get();
 
-            // Getting the current month's KPI for these members
-            $currentMonth = Carbon::now()->startOfMonth();
-            $kpisThisMonth = Kpi::whereIn('user_id', $members->pluck('id'))
-                ->whereYear('period_date', $currentMonth->year)
-                ->whereMonth('period_date', $currentMonth->month)
-                ->get()
-                ->keyBy('user_id');
+        // Kepala Departemen sees their own department members
+        $members = User::where('department_id', $user->department_id)
+            ->where('id', '!=', $user->id)
+            ->get();
 
-            return view('kpis.index_head', compact('members', 'kpisThisMonth'));
+        // Getting the current month's KPI for these members
+        $currentMonth = Carbon::now()->startOfMonth();
+        $kpisThisMonth = Kpi::whereIn('user_id', $members->pluck('id'))
+            ->whereYear('period_date', $currentMonth->year)
+            ->whereMonth('period_date', $currentMonth->month)
+            ->get()
+            ->keyBy('user_id');
+
+        return view('kpis.index_head', compact('members', 'kpisThisMonth'));
+    }
+
+    public function indexAdmin(Request $request)
+    {
+        $user = auth()->user();
+
+        if (!$user->canViewAllKPI()) {
+            abort(403, 'Akses ditolak.');
         }
-        else {
-            // Normal Anggota sees their own past KPIs BUT only if signed by PD
-            $kpis = Kpi::where('user_id', $user->id)
-                ->whereNotNull('pd_signature')
-                ->latest()
-                ->paginate(20);
 
-            return view('kpis.index_anggota', compact('kpis'));
-        }
+        // Admin/Project Director/VPD/Administrasi/Regional sees all KPIs
+        $kpis = Kpi::with(['user.department', 'assessor'])->latest()->paginate(20);
+
+        // Fetch members of Administrasi department who haven't been assessed this month
+        // so VPD/Admin can assess them as per requirement
+        $currentMonth = Carbon::now()->startOfMonth();
+        $administrasiMembers = User::whereHas('department', function ($q) {
+            $q->where('name', 'Departemen Administrasi Data Evaluation & Reporting');
+        })->whereDoesntHave('kpis', function ($q) use ($currentMonth) {
+            $q->whereYear('period_date', $currentMonth->year)
+                ->whereMonth('period_date', $currentMonth->month);
+        })->get();
+
+        return view('kpis.index_admin', compact('kpis', 'administrasiMembers'));
     }
 
     public function create(User $user)
@@ -174,7 +188,10 @@ class KpiController extends Controller
         elseif ($auth->isKepalaDivisi() && $kpi->user->department_id === $auth->department_id) {
         // allowed
         }
-        elseif ($auth->isAdministrasi() && $kpi->user->department_id === $auth->department_id) {
+        elseif ($auth->isRegionalAndOutreach() && $auth->isKepalaDivisi()) {
+        // allowed
+        }
+        elseif ($auth->isAdministrasi() && $auth->isKepalaDivisi()) {
         // allowed
         }
         elseif ($kpi->user_id === $auth->id && $kpi->pd_signature !== null) {

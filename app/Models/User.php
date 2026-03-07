@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -85,7 +84,7 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
-        public function kpis()
+    public function kpis()
     {
         return $this->hasMany(Kpi::class, 'user_id');
     }
@@ -99,33 +98,40 @@ class User extends Authenticatable
     {
         return $this->isSuperAdmin() || 
                $this->isAdminIT() || 
-               $this->role->name === 'vice_project_director' || 
-               $this->role->name === 'project_director';
+               $this->role?->name === 'vice_project_director' || 
+               $this->role?->name === 'project_director' ||
+               ($this->isAdministrasi() && $this->isKepalaDivisi()) ||
+               $this->isRegionalAndOutreach();
     }
 
     public function isAdminIT(): bool
     {
-        return $this->role->name === 'admin';
+        return $this->role?->name === 'admin' && $this->department?->name === 'IT';
     }
 
     public function isAdministrasi(): bool
     {
-        return $this->department?->name === 'Departemen Administrasi Data Evaluation & Reporting';
+        return $this->department?->name === 'Administrasi' || $this->department?->name === 'Departemen Administrasi Data Evaluation & Reporting';
+    }
+
+    public function isRegionalAndOutreach(): bool
+    {
+        return $this->department?->name === 'Departemen Regional & Outreach';
     }
 
     public function isKepalaDivisi(): bool
     {
-        return $this->role->name === 'kepala_divisi';
+        return $this->role?->name === 'kepala_divisi';
     }
 
     public function isAnggota(): bool
     {
-        return $this->role->name === 'anggota';
+        return $this->role?->name === 'anggota';
     }
 
     public function isSuperAdmin(): bool
     {
-        return $this->role->name === 'admin';
+        return $this->email === 'admin@mfls.com';
     }
 
     /**
@@ -138,7 +144,11 @@ class User extends Authenticatable
 
     public function canManageEvents(): bool
     {
-        return $this->isSuperAdmin() || $this->isAdminIT() || $this->isAdministrasi() || $this->role?->name === 'project_director';
+        return $this->isSuperAdmin() || 
+               $this->isAdminIT() || 
+               $this->isAdministrasi() || 
+               $this->role?->name === 'project_director' ||
+               ($this->isRegionalAndOutreach() && $this->isKepalaDivisi());
     }
 
     public function canCreateApproval(): bool
@@ -147,8 +157,9 @@ class User extends Authenticatable
                $this->isAdminIT() || 
                $this->isAdministrasi() || 
                $this->isKepalaDivisi() ||
-               $this->role->name === 'vice_project_director' || 
-               $this->role->name === 'project_director';
+               $this->role?->name === 'vice_project_director' || 
+               $this->role?->name === 'project_director' ||
+               ($this->isRegionalAndOutreach() && $this->isKepalaDivisi());
     }
 
     public function canViewAllAttendance(): bool
@@ -156,7 +167,8 @@ class User extends Authenticatable
         return $this->isSuperAdmin() || 
                $this->isAdminIT() || 
                $this->isAdministrasi() || 
-               $this->role->name === 'vice_project_director' || 
-               $this->role->name === 'project_director';
+               $this->role?->name === 'vice_project_director' || 
+               $this->role?->name === 'project_director' ||
+               ($this->isRegionalAndOutreach() && $this->isKepalaDivisi());
     }
 }

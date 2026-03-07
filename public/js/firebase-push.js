@@ -26,6 +26,11 @@ class FirebasePushManager {
                 console.log('❌ Notification API not found.');
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                 if (isIOS) {
+                    // Skip warning alert if we are on the profile edit page
+                    if (window.location.pathname.includes('/profile')) {
+                        return;
+                    }
+
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
                             icon: 'info',
@@ -41,6 +46,12 @@ class FirebasePushManager {
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
                 console.log('❌ Push notification permission denied.');
+
+                // Skip warning alert if we are on the profile edit page
+                if (window.location.pathname.includes('/profile')) {
+                    return;
+                }
+
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         icon: 'warning',
@@ -69,18 +80,6 @@ class FirebasePushManager {
             if (token) {
                 console.log('✅ FCM Token obtained:', token.substring(0, 20) + '...');
                 await this.saveTokenToServer(token);
-                // Notification for user
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'NOTIFIKASI AKTIF',
-                        text: 'HP lo sudah terdaftar buat nerima push notification, Bos!',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                }
             }
 
             // Handle foreground messages (when app is open)

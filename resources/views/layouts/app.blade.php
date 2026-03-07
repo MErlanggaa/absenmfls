@@ -61,6 +61,7 @@
                 body {
                     @apply bg-[#f1f5f9] text-slate-700 antialiased overflow-x-hidden;
                 }
+                [x-cloak] { display: none !important; }
             }
 
             @layer components {
@@ -139,16 +140,30 @@
                             <span>Riwayat Absen</span>
                         </a>
 
-                        @if(auth()->user()->canViewAllKPI() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi() || auth()->user()->isAnggota())
+                        @if((auth()->user()->isAnggota() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi()) && !(auth()->user()->isKepalaDivisi() && (auth()->user()->isRegionalAndOutreach() || auth()->user()->isAdministrasi())))
                         @php $unreadKpiCount = auth()->user()->unreadNotifications->filter(fn($n) => $n->type === 'App\Notifications\KpiNotification')->count(); @endphp
-                        <a href="{{ route('kpis.index') }}" class="sidebar-link {{ request()->routeIs('kpis.*') ? 'active' : '' }} relative">
+                        <a href="{{ route('kpis.index') }}" class="sidebar-link {{ request()->routeIs('kpis.index') ? 'active' : '' }} relative">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span>KPI</span>
+                            <span>KPI Saya</span>
                             @if($unreadKpiCount > 0)
                                 <span class="absolute top-3 right-6 w-5 h-5 bg-indigo-600 rounded-full text-[8px] flex items-center justify-center text-white border-2 border-white font-black shadow-lg">
                                     {{ $unreadKpiCount }}
                                 </span>
                             @endif
+                        </a>
+                        @endif
+
+                        @if(auth()->user()->isKepalaDivisi())
+                        <a href="{{ route('kpis.anggota') }}" class="sidebar-link {{ request()->routeIs('kpis.anggota') ? 'active' : '' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <span>KPI Anggota</span>
+                        </a>
+                        @endif
+
+                        @if(auth()->user()->canViewAllKPI())
+                        <a href="{{ route('kpis.keseluruhan') }}" class="sidebar-link {{ request()->routeIs('kpis.keseluruhan') ? 'active' : '' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <span>KPI Keseluruhan</span>
                         </a>
                         @endif
 
@@ -215,16 +230,30 @@
                     <span>Profil</span>
                 </a>
 
-                @if(auth()->user()->canViewAllKPI() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi() || auth()->user()->isAnggota())
+                @if((auth()->user()->isAnggota() || auth()->user()->isKepalaDivisi() || auth()->user()->isAdministrasi()) && !(auth()->user()->isKepalaDivisi() && (auth()->user()->isRegionalAndOutreach() || auth()->user()->isAdministrasi())))
                 @php $unreadKpiCount = auth()->user()->unreadNotifications->filter(fn($n) => $n->type === 'App\Notifications\KpiNotification')->count(); @endphp
-                <a href="{{ route('kpis.index') }}" class="mobile-nav-link {{ request()->routeIs('kpis.*') ? 'active' : '' }} relative">
+                <a href="{{ route('kpis.index') }}" class="mobile-nav-link {{ request()->routeIs('kpis.index') ? 'active' : '' }} relative">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span>KPI</span>
+                    <span>KPI Saya</span>
                     @if($unreadKpiCount > 0)
                         <span class="absolute -top-1 -right-1 w-4 h-4 bg-indigo-600 rounded-full text-[8px] flex items-center justify-center text-white border border-white font-black shadow-sm">
                             {{ $unreadKpiCount }}
                         </span>
                     @endif
+                </a>
+                @endif
+
+                @if(auth()->user()->isKepalaDivisi())
+                <a href="{{ route('kpis.anggota') }}" class="mobile-nav-link {{ request()->routeIs('kpis.anggota') ? 'active' : '' }}">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <span>KPI Anggota</span>
+                </a>
+                @endif
+
+                @if(auth()->user()->canViewAllKPI())
+                <a href="{{ route('kpis.keseluruhan') }}" class="mobile-nav-link {{ request()->routeIs('kpis.keseluruhan') ? 'active' : '' }}">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>Keseluruhan</span>
                 </a>
                 @endif
 
@@ -334,6 +363,22 @@
                         confirmButtonText: 'OKE, SORI'
                     });
                 @endif
+
+                @if($errors->any())
+                    @php 
+                        $allErrors = '';
+                        foreach($errors->all() as $error) {
+                            $allErrors .= '• ' . $error . '<br>';
+                        }
+                    @endphp
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ADA YANG SALAH, BOS!',
+                        html: '{!! $allErrors !!}',
+                        confirmButtonText: 'OKE, GUE BENERIN'
+                    });
+                @endif
+
                 @if(session('message'))
                     Swal.fire({
                         icon: 'info',

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 // handle storage assets when `php artisan storage:link` can't create symlink
 Route::get('/storage/{path}', function ($path) {
     $file = storage_path('app/public/' . $path);
-    if (! file_exists($file)) {
+    if (!file_exists($file)) {
         abort(404);
     }
     return response()->file($file);
@@ -55,6 +55,9 @@ Route::middleware('auth')->group(function () {
 
         // KPI Management
         Route::get('/kpis', [\App\Http\Controllers\KpiController::class , 'index'])->name('kpis.index');
+        Route::get('/kpis/anggota', [\App\Http\Controllers\KpiController::class , 'indexHead'])->name('kpis.anggota');
+        Route::get('/kpis/keseluruhan', [\App\Http\Controllers\KpiController::class , 'indexAdmin'])->name('kpis.keseluruhan');
+
         Route::get('/kpis/create/{user}', [\App\Http\Controllers\KpiController::class , 'create'])->name('kpis.create');
         Route::post('/kpis/store/{user}', [\App\Http\Controllers\KpiController::class , 'store'])->name('kpis.store');
         Route::post('/kpis/{kpi}/sign-pd', [\App\Http\Controllers\KpiController::class , 'signPd'])->name('kpis.sign-pd');

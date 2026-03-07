@@ -15,8 +15,12 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        // Manual check for current password to show custom SweetAlert error
+        if (!Hash::check($request->current_password, $request->user()->password)) {
+            return back()->with('error', 'Waduh! Password lama lo salah. Coba diingat-ingat lagi!');
+        }
+
         $validated = $request->validateWithBag('updatePassword', [
-            'current_password' => ['required', 'current_password'],
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
