@@ -175,17 +175,17 @@
 
                 <!-- Notif -->
                 <div class="premium-card p-0 overflow-hidden">
-                    <div class="p-6 lg:p-8 border-b border-slate-50 bg-amber-50/50">
+                    <div class="p-4 sm:p-6 lg:p-8 border-b border-slate-50 bg-amber-50/50">
                         <h3 class="text-sm lg:text-lg font-black text-slate-900 uppercase italic tracking-tighter">Notifikasi</h3>
                     </div>
-                    <div class="p-6 lg:p-8 space-y-4">
-                        @forelse(auth()->user()->unreadNotifications->take(2) as $notif)
-                        <div class="flex gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 items-center">
-                            <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-amber-500 shadow-sm border border-amber-100">
+                    <div class="p-4 sm:p-6 lg:p-8 space-y-3">
+                        @forelse(auth()->user()->unreadNotifications->take(3) as $notif)
+                        <div class="flex gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 items-start">
+                            <div class="w-8 h-8 shrink-0 bg-white rounded-lg flex items-center justify-center text-amber-500 shadow-sm border border-amber-100 mt-0.5">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                             </div>
-                            <div class="flex-1">
-                                <p class="text-[11px] font-bold text-slate-700 leading-tight truncate">{{ $notif->data['title'] ?? 'Notif' }}</p>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[11px] font-bold text-slate-700 leading-snug break-words">{{ $notif->data['title'] ?? 'Notif' }}</p>
                                 <p class="text-[9px] text-slate-400 font-black italic mt-1 uppercase">{{ $notif->created_at->diffForHumans() }}</p>
                             </div>
                         </div>
