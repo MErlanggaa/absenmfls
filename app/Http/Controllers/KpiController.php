@@ -84,9 +84,7 @@ class KpiController extends Controller
         })->whereDoesntHave('kpis', function ($q) use ($year, $month) {
             $q->whereYear('period_date', $year)
                 ->whereMonth('period_date', $month);
-        })->get()->reject(function ($m) {
-            return $m->isAdminIT() || $m->isSuperAdmin();
-        });
+        })->get();
 
         return view('kpis.index_admin', compact('kpis', 'administrasiMembers', 'month', 'year'));
     }
