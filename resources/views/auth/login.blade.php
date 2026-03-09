@@ -16,7 +16,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
     <!-- Tailwind Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,7 +25,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                     }
                 }
             }
@@ -61,7 +61,7 @@
         }
     </style>
 </head>
-<body class="bg-[#0f172a] overflow-hidden min-h-screen flex items-center justify-center p-6 font-sans">
+<body class="bg-[#0f172a] min-h-screen flex items-center justify-center p-6 font-sans relative">
     <!-- Animated background -->
     <div class="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/20 rounded-full blur-[120px]"></div>

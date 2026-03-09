@@ -15,13 +15,18 @@ class KpiController extends Controller
     {
         $user = auth()->user();
 
+        $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
+
         // Normal Anggota sees their own past KPIs BUT only if signed by PD
         $kpis = Kpi::where('user_id', $user->id)
             ->whereNotNull('pd_signature')
+            ->whereYear('period_date', $year)
+            ->whereMonth('period_date', $month)
             ->latest()
             ->paginate(20);
 
-        return view('kpis.index_anggota', compact('kpis'));
+        return view('kpis.index_anggota', compact('kpis', 'month', 'year'));
     }
 
     public function indexHead(Request $request)
@@ -32,20 +37,25 @@ class KpiController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        // Kepala Departemen sees their own department members
-        $members = User::where('department_id', $user->department_id)
-            ->where('id', '!=', $user->id)
-            ->get();
+        $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
 
-        // Getting the current month's KPI for these members
-        $currentMonth = Carbon::now()->startOfMonth();
+        // Kepala Departemen sees their own department members, but NOT themselves and NOT Admin IT
+        $membersQuery = User::where('department_id', $user->department_id)
+            ->where('id', '!=', $user->id);
+
+        $members = $membersQuery->get()->reject(function ($m) {
+            return $m->isAdminIT() || $m->isSuperAdmin();
+        });
+
+        // Getting the KPI for these members based on selected month/year
         $kpisThisMonth = Kpi::whereIn('user_id', $members->pluck('id'))
-            ->whereYear('period_date', $currentMonth->year)
-            ->whereMonth('period_date', $currentMonth->month)
+            ->whereYear('period_date', $year)
+            ->whereMonth('period_date', $month)
             ->get()
             ->keyBy('user_id');
 
-        return view('kpis.index_head', compact('members', 'kpisThisMonth'));
+        return view('kpis.index_head', compact('members', 'kpisThisMonth', 'month', 'year'));
     }
 
     public function indexAdmin(Request $request)
@@ -56,23 +66,31 @@ class KpiController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        // Admin/Project Director/VPD/Administrasi/Regional sees all KPIs
-        $kpis = Kpi::with(['user.department', 'assessor'])->latest()->paginate(20);
+        $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
 
-        // Fetch members of Administrasi department who haven't been assessed this month
-        // so VPD/Admin can assess them as per requirement
-        $currentMonth = Carbon::now()->startOfMonth();
+        // Admin/Project Director/VPD/Administrasi/Regional sees all KPIs for selected month
+        $kpis = Kpi::with(['user.department', 'assessor'])
+            ->whereYear('period_date', $year)
+            ->whereMonth('period_date', $month)
+            ->latest()
+            ->paginate(20)
+            ->appends($request->all());
+
+        // Fetch members of Administrasi department who haven't been assessed for the selected month, excluding AdminIT
         $administrasiMembers = User::whereHas('department', function ($q) {
             $q->where('name', 'Departemen Administrasi Data Evaluation & Reporting');
-        })->whereDoesntHave('kpis', function ($q) use ($currentMonth) {
-            $q->whereYear('period_date', $currentMonth->year)
-                ->whereMonth('period_date', $currentMonth->month);
-        })->get();
+        })->whereDoesntHave('kpis', function ($q) use ($year, $month) {
+            $q->whereYear('period_date', $year)
+                ->whereMonth('period_date', $month);
+        })->get()->reject(function ($m) {
+            return $m->isAdminIT() || $m->isSuperAdmin();
+        });
 
-        return view('kpis.index_admin', compact('kpis', 'administrasiMembers'));
+        return view('kpis.index_admin', compact('kpis', 'administrasiMembers', 'month', 'year'));
     }
 
-    public function create(User $user)
+    public function create(Request $request, User $user)
     {
         $auth = auth()->user();
 
@@ -80,19 +98,21 @@ class KpiController extends Controller
             abort(403, 'Anda hanya dapat menilai anggota dari departemen Anda sendiri.');
         }
 
-        // Check if already assessed for this month
-        $currentMonth = Carbon::now()->startOfMonth();
+        $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
+
+        // Check if already assessed for the selected month
         $existing = Kpi::where('user_id', $user->id)
-            ->whereYear('period_date', $currentMonth->year)
-            ->whereMonth('period_date', $currentMonth->month)
+            ->whereYear('period_date', $year)
+            ->whereMonth('period_date', $month)
             ->first();
 
         if ($existing) {
             return redirect()->route('kpis.show', $existing->id)
-                ->with('error', 'KPI untuk anggota ini di bulan ini sudah pernah diisi.');
+                ->with('error', 'KPI untuk anggota ini di periode bulan tersebut sudah pernah diisi.');
         }
 
-        return view('kpis.create', compact('user'));
+        return view('kpis.create', compact('user', 'month', 'year'));
     }
 
     public function store(Request $request, User $user)
@@ -104,6 +124,8 @@ class KpiController extends Controller
         }
 
         $request->validate([
+            'month' => 'required|integer|min:1|max:12',
+            'year' => 'required|integer|min:2020|max:2099',
             'head_signature' => 'required|image|max:2048',
             'category_A' => 'required|array|size:7',
             'category_A.*' => 'required|integer|min:1|max:4',
@@ -156,10 +178,12 @@ class KpiController extends Controller
             $headSignaturePath = $request->file('head_signature')->store('kpi_signatures', 'public');
         }
 
+        $periodDate = Carbon::create($request->year, $request->month, 1)->startOfMonth()->toDateString();
+
         $kpi = Kpi::create([
             'user_id' => $user->id,
             'assessor_id' => $auth->id,
-            'period_date' => Carbon::now()->startOfMonth()->toDateString(),
+            'period_date' => $periodDate,
             'behavior_scores' => $behaviorScores,
             'total_value' => number_format($totalPenilaian, 2),
             'index_score' => $indexScore,

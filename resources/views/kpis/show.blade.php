@@ -3,10 +3,10 @@
         {{ __('HASIL PENILAIAN KPI') }}
     </x-slot>
 
-    <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 overflow-x-hidden">
         <div class="premium-card mb-6 border-t-4 border-indigo-600">
             <div class="flex flex-col md:flex-row items-center gap-6 mb-8 border-b border-slate-100 pb-6">
-                <div class="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100 border border-slate-100 p-2">
+                <div class="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100 border border-slate-100 p-2 shrink-0">
                     <img src="{{ asset('loog.jpeg') }}" alt="Logo" class="w-full h-full object-contain">
                 </div>
                 <div class="text-center md:text-left flex-1">
@@ -21,26 +21,26 @@
                 <h4 class="text-lg text-slate-700 font-bold uppercase mt-2">MNCU FUTURE LEADER SCHOLARSHIP</h4>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm font-bold text-slate-700">
-                <div class="flex">
-                    <div class="w-40">NAMA ANGGOTA</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-xs lg:text-sm font-bold text-slate-700">
+                <div class="flex items-start">
+                    <div class="w-40 shrink-0">NAMA ANGGOTA</div>
                     <div class="mr-2">:</div>
-                    <div class="uppercase text-indigo-700">{{ $kpi->user->name }}</div>
+                    <div class="uppercase text-indigo-700 break-words flex-1">{{ $kpi->user->name }}</div>
                 </div>
-                <div class="flex">
-                    <div class="w-40">DEPARTEMEN</div>
+                <div class="flex items-start">
+                    <div class="w-40 shrink-0">DEPARTEMEN</div>
                     <div class="mr-2">:</div>
-                    <div class="uppercase text-indigo-700">{{ $kpi->user->department->name ?? '-' }}</div>
+                    <div class="uppercase text-indigo-700 break-words flex-1">{{ $kpi->user->department->name ?? '-' }}</div>
                 </div>
-                <div class="flex">
-                    <div class="w-40">PERIODE PENILAIAN</div>
+                <div class="flex items-start">
+                    <div class="w-40 shrink-0">PERIODE PENILAIAN</div>
                     <div class="mr-2">:</div>
-                    <div class="uppercase text-indigo-700">{{ \Carbon\Carbon::parse($kpi->period_date)->translatedFormat('F Y') }}</div>
+                    <div class="uppercase text-indigo-700 flex-1">{{ \Carbon\Carbon::parse($kpi->period_date)->translatedFormat('F Y') }}</div>
                 </div>
-                <div class="flex">
-                    <div class="w-40">NAMA PENILAI</div>
+                <div class="flex items-start">
+                    <div class="w-40 shrink-0">NAMA PENILAI</div>
                     <div class="mr-2">:</div>
-                    <div class="uppercase text-indigo-700">{{ $kpi->assessor->name }}</div>
+                    <div class="uppercase text-indigo-700 break-words flex-1">{{ $kpi->assessor->name }}</div>
                 </div>
             </div>
         </div>
@@ -151,8 +151,8 @@
         @endphp
 
         @foreach($categories as $catKey => $cat)
-        <div class="premium-card mb-6 p-0 overflow-hidden">
-            <div class="bg-indigo-600 text-white font-black px-6 py-4 uppercase tracking-widest text-sm shadow-md flex justify-between items-center">
+        <div class="premium-card mb-6 p-0 flex flex-col w-full overflow-hidden">
+            <div class="bg-indigo-600 text-white font-black px-4 sm:px-6 py-4 uppercase tracking-widest text-sm shadow-md flex flex-wrap gap-2 justify-between items-center rounded-t-2xl">
                 <span>{{ $cat['title'] }}</span>
                 <span class="bg-white text-indigo-600 px-3 py-1 rounded-lg text-xs font-black">
                     @php
@@ -163,8 +163,8 @@
                 </span>
             </div>
             
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left border-collapse min-w-[700px]">
+            <div class="w-full overflow-x-auto rounded-b-2xl">
+                <table class="w-full min-w-[700px] text-sm text-left border-collapse bg-white">
                     <thead>
                         <tr class="bg-slate-50 border-b border-indigo-100">
                             <th class="p-3 border-r border-slate-200 text-center w-12 text-slate-500">NO</th>

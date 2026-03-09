@@ -16,10 +16,9 @@
         <link rel="apple-touch-icon" href="/loog.jpeg">
         <link rel="icon" type="image/jpeg" href="/loog.jpeg">
 
-        <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
         <!-- Tailwind Play CDN -->
         <script src="https://cdn.tailwindcss.com"></script>
@@ -29,7 +28,7 @@
                 theme: {
                     extend: {
                         fontFamily: {
-                            sans: ['Outfit', 'sans-serif'],
+                            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                         },
                         colors: {
                             primary: '#4f46e5',
@@ -59,7 +58,7 @@
         <style type="text/tailwindcss">
             @layer base {
                 body {
-                    @apply bg-[#f1f5f9] text-slate-700 antialiased overflow-x-hidden;
+                    @apply bg-[#f1f5f9] text-slate-700 antialiased;
                 }
                 [x-cloak] { display: none !important; }
             }
@@ -100,8 +99,8 @@
             }
         </style>
     </head>
-    <body class="pb-24 lg:pb-0">
-        <div class="flex min-h-screen">
+    <body class="pb-32 lg:pb-0">
+        <div class="flex min-h-screen overflow-x-hidden">
             <!-- Sidebar (Desktop) -->
             <aside class="w-80 hidden lg:flex flex-col p-6 sticky top-0 h-screen z-50">
                 <div class="bg-white h-full rounded-[2.5rem] flex flex-col border border-slate-200 shadow-sm">
@@ -329,7 +328,7 @@
             /* SweetAlert Custom Styling */
             .swal2-popup {
                 @apply rounded-[2.5rem] p-8 border-none !important;
-                font-family: 'Outfit', sans-serif !important;
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
             }
             .swal2-title {
                 @apply font-black italic tracking-tighter uppercase text-slate-800 !important;

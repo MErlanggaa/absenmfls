@@ -3,13 +3,16 @@
         {{ __('ISI PENILAIAN KPI') }}
     </x-slot>
 
-    <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 overflow-x-hidden">
         <form action="{{ route('kpis.store', $user->id) }}" method="POST" id="kpiForm" enctype="multipart/form-data">
             @csrf
             
+            <input type="hidden" name="month" value="{{ $month ?? \Carbon\Carbon::now()->month }}">
+            <input type="hidden" name="year" value="{{ $year ?? \Carbon\Carbon::now()->year }}">
+
             <div class="premium-card mb-6 border-t-4 border-indigo-600">
                 <div class="flex flex-col md:flex-row items-center gap-6 mb-8 border-b border-slate-100 pb-6">
-                    <div class="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100 border border-slate-100 p-2">
+                    <div class="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100 border border-slate-100 p-2 shrink-0">
                         <img src="{{ asset('loog.jpeg') }}" alt="Logo" class="w-full h-full object-contain">
                     </div>
                     <div class="text-center md:text-left flex-1">
@@ -24,21 +27,23 @@
                     <h4 class="text-lg text-slate-700 font-bold uppercase mt-2">MNCU FUTURE LEADER SCHOLARSHIP</h4>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm font-bold text-slate-700">
-                    <div class="flex">
-                        <div class="w-32">NAMA</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-xs lg:text-sm font-bold text-slate-700">
+                    <div class="flex items-start">
+                        <div class="w-32 shrink-0">NAMA</div>
                         <div class="mr-2">:</div>
-                        <div class="uppercase text-indigo-700">{{ $user->name }}</div>
+                        <div class="uppercase text-indigo-700 break-words flex-1">{{ $user->name }}</div>
                     </div>
-                    <div class="flex">
-                        <div class="w-32">DEPARTEMEN</div>
+                    <div class="flex items-start">
+                        <div class="w-32 shrink-0">DEPARTEMEN</div>
                         <div class="mr-2">:</div>
-                        <div class="uppercase text-indigo-700">{{ $user->department->name ?? '-' }}</div>
+                        <div class="uppercase text-indigo-700 break-words flex-1">{{ $user->department->name ?? '-' }}</div>
                     </div>
-                    <div class="flex">
-                        <div class="w-32">HARI/TANGGAL</div>
+                    <div class="flex items-start">
+                        <div class="w-32 shrink-0">PERIODE NILAI</div>
                         <div class="mr-2">:</div>
-                        <div class="uppercase text-indigo-700">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</div>
+                        <div class="uppercase text-indigo-700 flex-1">
+                            {{ \Carbon\Carbon::create($year ?? \Carbon\Carbon::now()->year, $month ?? \Carbon\Carbon::now()->month, 1)->translatedFormat('F Y') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,7 +57,6 @@
                         </ul>
                     </div>
                 @endif
-            </div>
 
             <!-- START CATEGORIES -->
             @php
@@ -165,13 +169,13 @@
             @endphp
 
             @foreach($categories as $catKey => $cat)
-            <div class="premium-card mb-6 p-0 overflow-hidden">
-                <div class="bg-indigo-600 text-white font-black px-6 py-4 uppercase tracking-widest text-sm shadow-md">
+            <div class="premium-card mb-6 p-0 flex flex-col w-full overflow-hidden">
+                <div class="bg-indigo-600 text-white font-black px-4 sm:px-6 py-4 uppercase tracking-widest text-sm shadow-md rounded-t-2xl">
                     {{ $cat['title'] }}
                 </div>
                 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left border-collapse min-w-[700px]">
+                <div class="w-full overflow-x-auto rounded-b-2xl">
+                    <table class="w-full min-w-[700px] text-sm text-left border-collapse bg-white">
                         <thead>
                             <tr class="bg-slate-50 border-b border-indigo-100">
                                 <th class="p-3 border-r border-slate-200 text-center w-12 text-slate-500">NO</th>
@@ -225,10 +229,11 @@
             @endforeach
 
             <!-- TATACARA & SUBMIT -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <div class="premium-card p-6 border-l-4 border-indigo-400">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 w-full">
+                <div class="premium-card p-4 sm:p-6 border-l-4 border-indigo-400 w-full overflow-hidden">
                     <h4 class="text-xs font-black uppercase text-indigo-900 tracking-widest mb-4">Tata Cara Penilaian (Level)</h4>
-                    <table class="w-full text-center border-collapse border border-slate-200 text-xs">
+                    <div class="w-full overflow-x-auto">
+                        <table class="w-full text-center border-collapse border border-slate-200 text-xs min-w-[400px] bg-white">
                         <tr class="bg-slate-50 font-bold uppercase">
                             <td class="border border-slate-200 p-2">Level</td>
                             <td class="border border-slate-200 p-2 text-red-500">1</td>
@@ -251,9 +256,10 @@
                     </table>
                 </div>
 
-                <div class="premium-card p-6 border-l-4 border-emerald-400">
+                <div class="premium-card p-4 sm:p-6 border-l-4 border-emerald-400 w-full overflow-hidden">
                     <h4 class="text-xs font-black uppercase text-indigo-900 tracking-widest mb-4">Indeks Skor</h4>
-                    <table class="w-full text-center border-collapse border border-slate-200 text-xs">
+                    <div class="w-full overflow-x-auto">
+                        <table class="w-full text-center border-collapse border border-slate-200 text-xs min-w-[300px] bg-white">
                         <tr class="bg-slate-50 font-bold uppercase">
                             <td class="border border-slate-200 p-2">Indeks Skor</td>
                             <td class="border border-slate-200 p-2">Keterangan</td>
@@ -271,6 +277,7 @@
                             <td class="border border-slate-200 p-2 font-bold uppercase text-slate-700">Tidak Mencapai Target</td>
                         </tr>
                     </table>
+                    </div>
                 </div>
             </div>
 

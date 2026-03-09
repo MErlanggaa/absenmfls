@@ -3,70 +3,95 @@
         {{ __('KPI SAYA') }}
     </x-slot>
 
-    <div class="space-y-6 max-w-7xl mx-auto">
+    <div class="space-y-6 max-w-7xl mx-auto pb-12">
         <div class="premium-card mb-6 border-t-4 border-indigo-600">
             <h1 class="text-2xl font-black italic text-indigo-900 uppercase tracking-tighter mb-2">Penilaian KPI Saya</h1>
             <p class="text-sm font-medium text-slate-500">Berikut adalah daftar KPI Anda yang telah selesai dinilai dan disahkan oleh Project Director.</p>
+            
+            <!-- Filter Form -->
+            <form method="GET" action="{{ route('kpis.index') }}" class="mt-6 flex flex-col sm:flex-row gap-3">
+                <div class="flex-1">
+                    <select name="month" class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 text-sm font-medium text-slate-700 bg-slate-50">
+                        @foreach(range(1, 12) as $m)
+                            <option value="{{ $m }}" {{ request('month', \Carbon\Carbon::now()->month) == $m ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <select name="year" class="w-full rounded-xl border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 text-sm font-medium text-slate-700 bg-slate-50">
+                        @php $currentYear = \Carbon\Carbon::now()->year; @endphp
+                        @foreach(range($currentYear - 2, $currentYear + 1) as $y)
+                            <option value="{{ $y }}" {{ request('year', $currentYear) == $y ? 'selected' : '' }}>
+                                {{ $y }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="sm:w-auto w-full px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition shadow-md">
+                    Filter
+                </button>
+            </form>
         </div>
 
-        <div class="premium-card p-0 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left">
-                    <thead class="bg-indigo-50 text-indigo-900 border-b border-indigo-100">
-                        <tr>
-                            <th class="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Periode</th>
-                            <th class="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Penilai</th>
-                            <th class="px-6 py-4 font-black uppercase tracking-widest text-[10px] text-center">Skor Total</th>
-                            <th class="px-6 py-4 font-black uppercase tracking-widest text-[10px]">Indeks</th>
-                            <th class="px-6 py-4 font-black uppercase tracking-widest text-[10px] text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @forelse($kpis as $kpi)
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="px-6 py-4">
-                                <span class="font-bold text-slate-700">{{ \Carbon\Carbon::parse($kpi->period_date)->translatedFormat('F Y') }}</span>
-                            </td>
-                            <td class="px-6 py-4 font-medium text-slate-600">
-                                {{ $kpi->assessor->name }}
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 font-black text-sm border border-indigo-100">
-                                    {{ $kpi->total_value }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                @if($kpi->index_score === 'Mencapai Target')
-                                    <span class="px-3 py-1 rounded-full bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest border border-green-100">{{ $kpi->index_score }}</span>
-                                @elseif($kpi->index_score === 'Perlu Evaluasi')
-                                    <span class="px-3 py-1 rounded-full bg-yellow-50 text-yellow-600 text-[10px] font-black uppercase tracking-widest border border-yellow-100">{{ $kpi->index_score }}</span>
-                                @else
-                                    <span class="px-3 py-1 rounded-full bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest border border-red-100">{{ $kpi->index_score }}</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <a href="{{ route('kpis.show', $kpi->id) }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                    Lihat Detail
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-500 font-medium italic">
-                                Belum ada penilaian KPI untuk Anda yang telah disahkan oleh Project Director saat ini.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @forelse($kpis as $kpi)
+            <div class="premium-card p-6 flex flex-col relative overflow-hidden group">
+                <!-- Info Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic mb-1">Periode</div>
+                        <div class="text-sm font-black text-slate-800 italic uppercase truncate">{{ \Carbon\Carbon::parse($kpi->period_date)->translatedFormat('F Y') }}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic mb-1">Skor Total</div>
+                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 font-black text-sm border border-indigo-100 shadow-sm">
+                            {{ $kpi->total_value }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-2xl p-4 mb-4 border border-slate-100 flex-1">
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest italic mb-1">Penilai</span>
+                            <span class="font-bold text-slate-700 text-[10px] uppercase line-clamp-1">{{ $kpi->assessor->name }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest italic mb-1">Indeks</span>
+                            @if($kpi->index_score === 'Mencapai Target')
+                                <span class="text-[10px] font-black text-green-600 uppercase">{{ $kpi->index_score }}</span>
+                            @elseif($kpi->index_score === 'Perlu Evaluasi')
+                                <span class="text-[10px] font-black text-yellow-600 uppercase">{{ $kpi->index_score }}</span>
+                            @else
+                                <span class="text-[10px] font-black text-red-600 uppercase">{{ $kpi->index_score }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-100">
+                    <a href="{{ route('kpis.show', $kpi->id) }}" class="flex items-center justify-center gap-2 w-full px-4 py-3 bg-slate-950 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-indigo-600 transition-all shadow-md italic">
+                        Lihat Detail
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                </div>
             </div>
-            
-            @if($kpis->hasPages())
-            <div class="p-4 border-t border-slate-100">
-                {{ $kpis->links() }}
+            @empty
+            <div class="col-span-full shadow-sm text-center py-16 bg-white rounded-[2.5rem] border border-slate-200">
+                <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 italic">Belum ada penilaian KPI untuk Anda yang telah disahkan oleh Project Director saat ini.</p>
             </div>
-            @endif
+            @endforelse
         </div>
+        
+        @if($kpis->hasPages())
+        <div class="mt-6 border-t border-slate-100 pt-6">
+            {{ $kpis->appends(request()->query())->links() }}
+        </div>
+        @endif
     </div>
 </x-app-layout>
