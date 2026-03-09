@@ -99,11 +99,14 @@ class EventController extends Controller
         
         $users = null;
         if (auth()->user()->canViewAllAttendance()) {
-            $userQuery = \App\Models\User::where('is_active', true);
+            $userQuery = \App\Models\User::with('role')->where('is_active', true);
             if (!empty($event->target_departments)) {
                 $userQuery->whereIn('department_id', $event->target_departments);
             }
-            $users = $userQuery->orderBy('name')->get();
+            // Exclude admins and superadmins from the monitoring list
+            $users = $userQuery->whereHas('role', function($q) {
+                $q->whereNotIn('name', ['admin', 'superadmin']);
+            })->orderBy('name')->get();
         }
 
         return view('events.show', compact('event', 'users'));
