@@ -111,9 +111,9 @@
                     <button onclick="checkFcm()" type="button" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
                         Cek Token Saya
                     </button>
-                    <button onclick="testSound()" type="button" class="px-4 py-3 bg-amber-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-amber-600 transition shadow-lg shadow-amber-100">
+                    <!-- <button onclick="testSound()" type="button" class="px-4 py-3 bg-amber-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-amber-600 transition shadow-lg shadow-amber-100">
                         🔊 Test Suara
-                    </button>
+                    </button> -->
                     <button onclick="copyToken()" type="button" class="px-4 py-3 bg-white text-indigo-600 border border-indigo-100 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-indigo-50 transition">
                         Copy
                     </button>

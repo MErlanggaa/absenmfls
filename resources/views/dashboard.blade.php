@@ -54,13 +54,13 @@
                     <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] italic">Notifikasi</span>
                 </div>
                 <!-- KPI Link for Anggota -->
-                <a href="{{ route('kpis.index') }}" class="premium-card p-6 flex flex-col items-center justify-center gap-1 bg-white hover:bg-indigo-50 transition-colors col-span-2">
+                <!-- <a href="{{ route('kpis.index') }}" class="premium-card p-6 flex flex-col items-center justify-center gap-1 bg-white hover:bg-indigo-50 transition-colors col-span-2">
                     <div class="flex items-center gap-3">
                         <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <span class="text-xl font-black text-slate-800 italic leading-none uppercase tracking-tighter">Penilaian KPI</span>
                     </div>
                     <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] italic mt-1 text-center">Cek Hasil Penilaian Bulanan Anda</span>
-                </a>
+                </a> -->
             </div>
 
             <!-- Recent Activity List (Very Simple) -->
