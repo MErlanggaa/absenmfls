@@ -282,9 +282,11 @@ class KpiController extends Controller
         $pd = \App\Models\User::whereHas('role', function ($q) {
             $q->where('name', 'project_director');
         })->first();
-
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('kpis.pdf', compact('kpi', 'pd'))
-            ->setPaper('a4', 'portrait');
+            ->setPaper('a4', 'portrait')
+            ->setOptions($this->pdfOptions());
+
+
 
         $filename = 'KPI_' . str_replace(' ', '_', $kpi->user->name) . '_' . \Carbon\Carbon::parse($kpi->period_date)->format('M_Y') . '.pdf';
         return $pdf->download($filename);
@@ -318,8 +320,8 @@ class KpiController extends Controller
         if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
             foreach ($kpis as $kpi) {
                 $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('kpis.pdf', compact('kpi', 'pd'))
-                    ->setPaper('a4', 'portrait');
-
+                    ->setPaper('a4', 'portrait')
+                    ->setOptions($this->pdfOptions());
                 $pdfFileName = 'KPI_' . str_replace([' ', '/', '\\'], '_', $kpi->user->name) . '_' . \Carbon\Carbon::parse($kpi->period_date)->format('M_Y') . '_' . $kpi->id . '.pdf';
 
                 $zip->addFromString($pdfFileName, $pdf->output());
