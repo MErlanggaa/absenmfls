@@ -106,7 +106,8 @@ class User extends Authenticatable
 
     public function isAdminIT(): bool
     {
-        return $this->role?->name === 'admin' && $this->department?->name === 'IT';
+        // Any admin-role user should have admin access and NOT be a KPI target
+        return $this->role?->name === 'admin';
     }
 
     public function isAdministrasi(): bool
