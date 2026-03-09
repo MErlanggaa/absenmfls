@@ -174,9 +174,9 @@
                     {{ $cat['title'] }}
                 </div>
                 
-                <div class="w-full overflow-x-auto rounded-b-2xl">
-                    <table class="w-full min-w-[700px] text-sm text-left border-collapse bg-white">
-                        <thead>
+                <div class="w-full rounded-b-2xl bg-white border-t border-slate-100">
+                    <table class="w-full text-sm text-left border-collapse bg-white block md:table">
+                        <thead class="hidden md:table-header-group">
                             <tr class="bg-slate-50 border-b border-indigo-100">
                                 <th class="p-3 border-r border-slate-200 text-center w-12 text-slate-500">NO</th>
                                 <th class="p-3 border-r border-slate-200 w-48 text-indigo-900 font-bold uppercase text-[10px]">Aspek Perilaku</th>
@@ -192,29 +192,51 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="block md:table-row-group">
                             @php $qIndex = 0; @endphp
                             @foreach($cat['aspects'] as $aspectIndex => $aspect)
                                 @php $rowspan = count($aspect[1]); @endphp
+                                
+                                <!-- Mobile Category Header -->
+                                <tr class="block md:hidden bg-slate-50/80 border-b border-indigo-100/50 p-4 shadow-sm">
+                                    <td class="block w-full text-xs font-black text-indigo-900 uppercase tracking-widest leading-relaxed">
+                                        {{ $aspectIndex + 1 }}. {{ $aspect[0] }}
+                                    </td>
+                                </tr>
+
                                 @foreach($aspect[1] as $bIndex => $behavior)
-                                <tr class="border-b border-slate-100 hover:bg-slate-50/30 transition">
+                                <tr class="block md:table-row border-b border-slate-100 hover:bg-slate-50/30 transition p-5 md:p-0">
                                     @if($bIndex == 0)
-                                        <td rowspan="{{ $rowspan }}" class="p-3 border-r border-slate-200 text-center font-bold text-slate-400 bg-white">
+                                        <td rowspan="{{ $rowspan }}" class="hidden md:table-cell p-3 border-r border-slate-200 text-center font-bold text-slate-400 bg-white">
                                             {{ $aspectIndex + 1 }}
                                         </td>
-                                        <td rowspan="{{ $rowspan }}" class="p-3 border-r border-slate-200 font-medium text-slate-700 bg-white">
+                                        <td rowspan="{{ $rowspan }}" class="hidden md:table-cell p-3 border-r border-slate-200 font-medium text-slate-700 bg-white">
                                             {{ $aspect[0] }}
                                         </td>
                                     @endif
-                                    <td class="p-3 border-r border-slate-200 text-slate-600">
+                                    
+                                    <td class="block md:table-cell p-0 md:p-3 pb-4 md:pb-3 border-r-0 md:border-r border-slate-200 text-slate-600 text-sm md:text-sm font-medium md:font-normal leading-relaxed">
                                         {{ $behavior }}
                                     </td>
-                                    <td class="p-0 border-r border-slate-200">
-                                        <div class="flex h-full min-h-[48px]">
+                                    
+                                    <td class="block md:table-cell p-0 md:p-0 border-r-0 md:border-r border-slate-200 mt-2 md:mt-0">
+                                        <div class="md:hidden text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Pilih Level Kinerja</div>
+                                        <div class="flex h-12 md:h-full md:min-h-[48px] w-full border border-slate-200 md:border-0 rounded-xl md:rounded-none overflow-hidden bg-slate-50 md:bg-transparent">
                                             @for($lvl=1; $lvl<=4; $lvl++)
-                                                <div class="w-1/4 border-r last:border-r-0 border-slate-200 flex items-center justify-center p-2 hover:bg-indigo-50 transition cursor-pointer" onclick="this.querySelector('input').click()">
-                                                    <input type="radio" required class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 cursor-pointer" name="{{ $cat['name'] }}[{{ $qIndex }}]" value="{{ $lvl }}">
-                                                </div>
+                                                <label class="flex-1 md:w-1/4 border-r last:border-r-0 border-slate-200 flex items-center justify-center p-0 md:p-2 hover:bg-indigo-50 transition cursor-pointer relative group">
+                                                    
+                                                    <!-- Hide native radio on mobile, show on desktop -->
+                                                    <input type="radio" required class="peer hidden md:block w-4 h-4 text-indigo-600 focus:ring-indigo-500 cursor-pointer absolute md:relative z-20 m-0" name="{{ $cat['name'] }}[{{ $qIndex }}]" value="{{ $lvl }}">
+                                                    
+                                                    <!-- Mobile overlay input -->
+                                                    <input type="radio" required class="peer md:hidden opacity-0 absolute inset-0 z-20 w-full h-full cursor-pointer m-0" name="{{ $cat['name'] }}[{{ $qIndex }}]" value="{{ $lvl }}">
+
+                                                    <!-- Mobile numbers -->
+                                                    <span class="md:hidden z-10 text-xs font-black text-slate-400 peer-checked:text-indigo-700 relative">{{ $lvl }}</span>
+                                                    
+                                                    <!-- Mobile highlight border/bg -->
+                                                    <div class="md:hidden absolute inset-0 z-0 bg-transparent peer-checked:bg-indigo-100 border-2 border-transparent peer-checked:border-indigo-500 rounded-none transition-colors"></div>
+                                                </label>
                                             @endfor
                                         </div>
                                     </td>

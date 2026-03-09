@@ -65,7 +65,7 @@
 
             @layer components {
                 .premium-card {
-                    @apply bg-white rounded-[2rem] p-8 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:-translate-y-1;
+                    @apply bg-white rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:-translate-y-1;
                 }
 
                 .btn-primary {
@@ -86,7 +86,7 @@
                 }
 
                 .input-premium {
-                    @apply bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder:text-slate-400;
+                    @apply bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder:text-slate-400;
                 }
 
                 /* Mobile Bottom Nav Styles */
@@ -139,7 +139,7 @@
                             <span>Riwayat Absen</span>
                         </a>
 
-                        @if(!auth()->user()->isKepalaDivisi() && (auth()->user()->isAnggota() || auth()->user()->isAdministrasi()))
+                        <!-- @if(!auth()->user()->isKepalaDivisi() && (auth()->user()->isAnggota() || auth()->user()->isAdministrasi()))
                         @php $unreadKpiCount = auth()->user()->unreadNotifications->filter(fn($n) => $n->type === 'App\Notifications\KpiNotification')->count(); @endphp
                         <a href="{{ route('kpis.index') }}" class="sidebar-link {{ request()->routeIs('kpis.index') ? 'active' : '' }} relative">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -150,7 +150,7 @@
                                 </span>
                             @endif
                         </a>
-                        @endif
+                        @endif -->
 
                         @if(auth()->user()->isKepalaDivisi())
                         <a href="{{ route('kpis.anggota') }}" class="sidebar-link {{ request()->routeIs('kpis.anggota') ? 'active' : '' }}">
@@ -229,7 +229,7 @@
                     <span>Profil</span>
                 </a>
 
-                @if(!auth()->user()->isKepalaDivisi() && (auth()->user()->isAnggota() || auth()->user()->isAdministrasi()))
+                <!-- @if(!auth()->user()->isKepalaDivisi() && (auth()->user()->isAnggota() || auth()->user()->isAdministrasi()))
                 @php $unreadKpiCount = auth()->user()->unreadNotifications->filter(fn($n) => $n->type === 'App\Notifications\KpiNotification')->count(); @endphp
                 <a href="{{ route('kpis.index') }}" class="mobile-nav-link {{ request()->routeIs('kpis.index') ? 'active' : '' }} relative">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -240,7 +240,7 @@
                         </span>
                     @endif
                 </a>
-                @endif
+                @endif -->
 
                 @if(auth()->user()->isKepalaDivisi())
                 <a href="{{ route('kpis.anggota') }}" class="mobile-nav-link {{ request()->routeIs('kpis.anggota') ? 'active' : '' }}">
