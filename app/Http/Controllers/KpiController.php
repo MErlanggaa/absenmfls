@@ -40,13 +40,14 @@ class KpiController extends Controller
         $month = $request->input('month', Carbon::now()->month);
         $year = $request->input('year', Carbon::now()->year);
 
-        // Kepala Departemen sees their own department members, but NOT themselves and NOT Admin IT
-        $membersQuery = User::where('department_id', $user->department_id)
-            ->where('id', '!=', $user->id);
-
-        $members = $membersQuery->get()->reject(function ($m) {
-            return $m->isAdminIT() || $m->isSuperAdmin();
-        });
+        // Kepala Departemen sees their own department members, but NOT themselves and NOT Admin/SuperAdmin
+        $members = User::with('role')
+            ->where('department_id', $user->department_id)
+            ->where('id', '!=', $user->id)
+            ->whereHas('role', function ($q) {
+            $q->whereNotIn('name', ['admin', 'superadmin', 'kepala_divisi']);
+        })
+            ->get();
 
         // Getting the KPI for these members based on selected month/year
         $kpisThisMonth = Kpi::whereIn('user_id', $members->pluck('id'))
