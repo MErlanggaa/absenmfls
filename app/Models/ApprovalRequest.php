@@ -14,6 +14,7 @@ class ApprovalRequest extends Model
         'type',
         'description',
         'document_path',
+        'document_link',
         'department_id',
         'created_by',
         'current_level',

@@ -47,6 +47,7 @@ class ApprovalRequestController extends Controller
             'type' => 'required|string|max:100',
             'description' => 'required|string',
             'document' => 'nullable|file|mimes:pdf,doc,docx,jpg,png|max:5120', // 5MB
+            'document_link' => 'nullable|url|max:2048',
         ]);
 
         $path = null;
@@ -60,6 +61,7 @@ class ApprovalRequestController extends Controller
             'description' => $request->description,
             'department_id' => auth()->user()->department_id,
             'document_path' => $path,
+            'document_link' => $request->document_link,
             'created_by' => auth()->id(),
             'current_level' => 1,
             'status' => 'pending_review',

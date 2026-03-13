@@ -52,14 +52,24 @@
                             <p class="text-slate-600 leading-relaxed italic whitespace-pre-wrap text-sm">{{ $approvalRequest->description }}</p>
                         </div>
                     </div>
-                    <div class="bg-indigo-50/50 rounded-[2rem] p-6 border border-indigo-100 flex flex-col justify-center items-center text-center">
-                        <h4 class="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-3 italic">Dokumen Lampiran</h4>
+                    <div class="bg-indigo-50/50 rounded-[2rem] p-6 border border-indigo-100 flex flex-col justify-center items-center text-center gap-3">
+                        <h4 class="text-[9px] font-black text-indigo-400 uppercase tracking-widest italic">Lampiran Pendukung</h4>
+                        
                         @if($approvalRequest->document_path)
-                            <a href="{{ route('approval-requests.download', basename($approvalRequest->document_path)) }}" class="inline-flex items-center gap-2 bg-indigo-600 px-6 py-3 rounded-xl text-[10px] font-black text-white hover:bg-slate-900 transition-all uppercase tracking-widest italic shadow-lg shadow-indigo-100">
+                            <a href="{{ route('approval-requests.download', basename($approvalRequest->document_path)) }}" class="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 px-6 py-3 rounded-xl text-[10px] font-black text-white hover:bg-slate-900 transition-all uppercase tracking-widest italic shadow-lg shadow-indigo-100">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
-                                <span>Unduh Dokumen</span>
+                                <span>Unduh File</span>
                             </a>
-                        @else
+                        @endif
+
+                        @if($approvalRequest->document_link)
+                            <a href="{{ $approvalRequest->document_link }}" target="_blank" class="w-full inline-flex items-center justify-center gap-2 bg-white border border-slate-200 px-6 py-3 rounded-xl text-[10px] font-black text-slate-600 hover:bg-slate-50 transition-all uppercase tracking-widest italic">
+                                <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                <span>Buka Link</span>
+                            </a>
+                        @endif
+
+                        @if(!$approvalRequest->document_path && !$approvalRequest->document_link)
                             <p class="text-[9px] font-black text-slate-300 uppercase italic">Lampiran Kosong</p>
                         @endif
                     </div>
