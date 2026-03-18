@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\Storage;
 
 class KpiController extends Controller
 {
+    private function pdfOptions(): array
+    {
+        return [
+            'isRemoteEnabled' => false,
+            'isLocalFileRestrictionEnabled' => false,
+            'chroot' => '/',
+            'public_path' => realpath(base_path('../public_html')),
+        ];
+    }
     public function index(Request $request)
     {
         $user = auth()->user();
