@@ -7,8 +7,8 @@
         <form action="{{ route('kpis.store', $user->id) }}" method="POST" id="kpiForm" enctype="multipart/form-data">
             @csrf
             
-            <input type="hidden" name="month" value="{{ $month ?? \Carbon\Carbon::now()->month }}">
-            <input type="hidden" name="year" value="{{ $year ?? \Carbon\Carbon::now()->year }}">
+            <input type="hidden" name="month" value="{{ old('month', $month ?? \Carbon\Carbon::now()->month) }}">
+            <input type="hidden" name="year" value="{{ old('year', $year ?? \Carbon\Carbon::now()->year) }}">
 
             <div class="premium-card mb-6 border-t-4 border-indigo-600">
                 <div class="flex flex-col md:flex-row items-center gap-6 mb-8 border-b border-slate-100 pb-6">
@@ -50,9 +50,9 @@
 
                 @if ($errors->any())
                     <div class="bg-red-50 text-red-600 p-4 rounded-2xl text-xs font-bold mb-6 border border-red-100 italic">
-                        <ul>
+                        <ul class="space-y-1">
                             @foreach ($errors->all() as $error)
-                                <li>- Pastikan semua nilai 1-4 diisi dengan lengkap.</li>
+                                <li>- {{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -226,10 +226,10 @@
                                                 <label class="flex-1 md:w-1/4 border-r last:border-r-0 border-slate-200 flex items-center justify-center p-0 md:p-2 hover:bg-indigo-50 transition cursor-pointer relative group">
                                                     
                                                     <!-- Hide native radio on mobile, show on desktop -->
-                                                    <input type="radio" required class="peer hidden md:block w-4 h-4 text-indigo-600 focus:ring-indigo-500 cursor-pointer absolute md:relative z-20 m-0" name="{{ $cat['name'] }}[{{ $qIndex }}]" value="{{ $lvl }}">
+                                                    <input type="radio" required class="peer hidden md:block w-4 h-4 text-indigo-600 focus:ring-indigo-500 cursor-pointer absolute md:relative z-20 m-0" name="{{ $cat['name'] }}[{{ $qIndex }}]" value="{{ $lvl }}" {{ old($cat['name'] . '.' . $qIndex) == $lvl ? 'checked' : '' }}>
                                                     
                                                     <!-- Mobile overlay input -->
-                                                    <input type="radio" required class="peer md:hidden opacity-0 absolute inset-0 z-20 w-full h-full cursor-pointer m-0" name="{{ $cat['name'] }}[{{ $qIndex }}]" value="{{ $lvl }}">
+                                                    <input type="radio" required class="peer md:hidden opacity-0 absolute inset-0 z-20 w-full h-full cursor-pointer m-0" name="{{ $cat['name'] }}[{{ $qIndex }}]" value="{{ $lvl }}" {{ old($cat['name'] . '.' . $qIndex) == $lvl ? 'checked' : '' }}>
 
                                                     <!-- Mobile numbers -->
                                                     <span class="md:hidden z-10 text-xs font-black text-slate-400 peer-checked:text-indigo-700 relative">{{ $lvl }}</span>

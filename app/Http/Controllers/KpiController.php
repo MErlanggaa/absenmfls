@@ -198,7 +198,7 @@ class KpiController extends Controller
             $notifiable->notify(new \App\Notifications\KpiNotification($kpi, 'created'));
         }
 
-        return redirect()->route('kpis.index')->with('success', 'KPI berhasil dinilai dan dikirim ke Project Director.');
+        return redirect()->route('kpis.anggota')->with('success', 'KPI berhasil dinilai dan dikirim ke Project Director.');
     }
 
     public function show(Kpi $kpi)
