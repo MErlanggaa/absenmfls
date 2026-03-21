@@ -362,7 +362,15 @@
                     DOWNLOAD PDF
                 </a>
             @endif
-            <a href="{{ route('kpis.index') }}" class="btn-primary" style="padding-left: 2rem; padding-right: 2rem;">
+            @php
+                $backRoute = 'kpis.index';
+                if(auth()->user()->canViewAllKPI()) {
+                    $backRoute = 'kpis.keseluruhan';
+                } elseif(auth()->user()->isKepalaDivisi()) {
+                    $backRoute = 'kpis.anggota';
+                }
+            @endphp
+            <a href="{{ route($backRoute) }}" class="btn-primary" style="padding-left: 2rem; padding-right: 2rem;">
                 KEMBALI KE DAFTAR
             </a>
         </div>

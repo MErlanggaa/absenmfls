@@ -316,7 +316,15 @@
             </div>
 
             <div class="flex items-center justify-end gap-4 mb-20">
-                <a href="{{ route('kpis.index') }}" class="px-8 py-4 rounded-2xl bg-slate-100 text-slate-500 font-black uppercase tracking-widest text-[10px] italic hover:bg-slate-200 transition">BATAL</a>
+                @php
+                    $cancelRoute = 'kpis.index';
+                    if(auth()->user()->canViewAllKPI()) {
+                        $cancelRoute = 'kpis.keseluruhan';
+                    } elseif(auth()->user()->isKepalaDivisi()) {
+                        $cancelRoute = 'kpis.anggota';
+                    }
+                @endphp
+                <a href="{{ route($cancelRoute) }}" class="px-8 py-4 rounded-2xl bg-slate-100 text-slate-500 font-black uppercase tracking-widest text-[10px] italic hover:bg-slate-200 transition">BATAL</a>
                 <button type="button" onclick="confirmSubmit()" class="btn-primary" style="padding-left: 2rem; padding-right: 2rem;">
                     SIMPAN PENILAIAN
                 </button>
