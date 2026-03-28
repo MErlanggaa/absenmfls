@@ -98,6 +98,11 @@
                 }
             }
         </style>
+        @if(config('services.adsense.publisher_id'))
+        <!-- Google AdSense -->
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('services.adsense.publisher_id') }}"
+             crossorigin="anonymous"></script>
+        @endif
     </head>
     <body class="pb-32 lg:pb-0">
         <div class="flex min-h-screen overflow-x-hidden">
