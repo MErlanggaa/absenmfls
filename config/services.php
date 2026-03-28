@@ -32,7 +32,7 @@ return [
     ],
 
     'adsense' => [
-        'publisher_id' => env('ca-pub-7284443532822005'),
+        'publisher_id' => env('ADSENSE_PUBLISHER_ID'),
     ],
 
 ];
