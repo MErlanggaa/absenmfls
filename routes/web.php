@@ -14,7 +14,11 @@ Route::get('/storage/{path}', function ($path) {
 })->where('path', '.*');
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('welcome');
+});
+
+Route::get('/adsense-check', function () {
+    return view('adsense-check');
 });
 
 Route::get('/dashboard', DashboardController::class)
