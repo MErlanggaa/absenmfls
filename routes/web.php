@@ -14,7 +14,7 @@ Route::get('/storage/{path}', function ($path) {
 })->where('path', '.*');
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/adsense-check', function () {
