@@ -60,6 +60,9 @@
             filter: brightness(1.1);
         }
     </style>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7284443532822005"
+         crossorigin="anonymous"></script>
 </head>
 <body class="bg-[#0f172a] min-h-screen flex items-center justify-center p-6 font-sans relative">
     <!-- Animated background -->
