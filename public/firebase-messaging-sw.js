@@ -13,14 +13,26 @@ self.addEventListener('activate', function (event) {
     event.waitUntil(clients.claim());
 });
 
-// Simple fetch listener to pass PWA criteria
+// Robust fetch listener to pass PWA criteria without crashing on network error
 self.addEventListener('fetch', function (event) {
+    // Only intercept GET requests to avoid issues with POST/PUT/DELETE
+    if (event.request.method !== 'GET') return;
+
     event.respondWith(
         fetch(event.request).catch(function () {
-            return caches.match(event.request);
+            return caches.match(event.request).then(function (response) {
+                // If found in cache, return it. Otherwise, return a valid Response object
+                // to avoid the "Failed to convert value to 'Response'" TypeError.
+                return response || new Response('Network error or resource not available offline.', {
+                    status: 503,
+                    statusText: 'Service Unavailable',
+                    headers: new Headers({ 'Content-Type': 'text/plain' })
+                });
+            });
         })
     );
 });
+
 
 // =====================================================
 // FIREBASE CONFIG - hardcoded agar tidak null di Android
